@@ -1,0 +1,61 @@
+{
+  parserClass="vip.testops.qa_design.lang.parser.QaDesignParser"
+
+  extends="com.intellij.extapi.psi.ASTWrapperPsiElement"
+
+  psiClassPrefix="QaDesign"
+  psiImplClassSuffix="Impl"
+  psiPackage="vip.testops.qa_design.lang.psi"
+  psiImplPackage="vip.testops.qa_design.lang.psi.impl"
+
+  elementTypeHolderClass="vip.testops.qa_design.lang.psi.QaDesignTypes"
+  elementTypeClass="vip.testops.qa_design.lang.psi.QaDesignElementType"
+  tokenTypeClass="vip.testops.qa_design.lang.psi.QaDesignTokenType"
+
+  psiImplUtilClass="vip.testops.qa_design.lang.psi.impl.QaDesignPsiImplUtil"
+}
+
+qaDesignFile ::= (COMMENT|rule_first_line (rule_test_point_design)*|CRLF)
+fake_rule::= INSIDE
+//private line_rule ::= (COMMENT|rule_first_line (rule_test_point_design)*|CRLF)
+rule_first_line ::= REQUIREMENT_KEY SEPARATOR CONTENT {
+    mixin="vip.testops.qa_design.lang.psi.impl.QaDesignNamedElementImpl"
+    implements="vip.testops.qa_design.lang.psi.QaDesignNamedElement"
+    methods=[getName setName getValue getNameIdentifier getPresentation]
+}
+rule_test_point_design ::= TEST_POINT_KEY SEPARATOR CONTENT (rule_test_case_design)+ {
+    mixin="vip.testops.qa_design.lang.psi.impl.QaDesignNamedElementImpl"
+    implements="vip.testops.qa_design.lang.psi.QaDesignNamedElement"
+    methods=[getName setName getValue getNameIdentifier getPresentation]
+}
+//rule_test_case_design ::= TEST_CASE_KEY rule_test_case_name rule_test_case_desc rule_test_case_data? rule_test_case_step rule_test_case_expect {
+rule_test_case_design ::= TEST_CASE_NAME_KEY SEPARATOR CONTENT rule_test_case_desc rule_test_case_data? rule_test_case_step rule_test_case_expect {
+    mixin="vip.testops.qa_design.lang.psi.impl.QaDesignNamedElementImpl"
+    implements="vip.testops.qa_design.lang.psi.QaDesignNamedElement"
+    methods=[getName setName getValue getNameIdentifier getPresentation]
+}
+//rule_test_case_name ::= TEST_CASE_NAME_KEY SEPARATOR CONTENT {
+//    mixin="vip.testops.qa_design.lang.psi.impl.QaDesignNamedElementImpl"
+//    implements="vip.testops.qa_design.lang.psi.QaDesignNamedElement"
+//    methods=[getName setName getValue getNameIdentifier getPresentation]
+//}
+rule_test_case_desc ::= TEST_CASE_DESC_KEY SEPARATOR CONTENT {
+    mixin="vip.testops.qa_design.lang.psi.impl.QaDesignNamedElementImpl"
+    implements="vip.testops.qa_design.lang.psi.QaDesignNamedElement"
+    methods=[getName setName getValue getNameIdentifier getPresentation]
+}
+rule_test_case_data ::= TEST_CASE_DATA_KEY SEPARATOR CONTENT* {
+    mixin="vip.testops.qa_design.lang.psi.impl.QaDesignNamedElementImpl"
+    implements="vip.testops.qa_design.lang.psi.QaDesignNamedElement"
+    methods=[getName setName getValue getNameIdentifier getPresentation]
+}
+rule_test_case_step ::= TEST_CASE_STEP_KEY SEPARATOR CONTENT+ {
+    mixin="vip.testops.qa_design.lang.psi.impl.QaDesignNamedElementImpl"
+    implements="vip.testops.qa_design.lang.psi.QaDesignNamedElement"
+    methods=[getName setName getValue getNameIdentifier getPresentation]
+}
+rule_test_case_expect ::= TEST_CASE_EXPECT_KEY SEPARATOR CONTENT+ {
+    mixin="vip.testops.qa_design.lang.psi.impl.QaDesignNamedElementImpl"
+    implements="vip.testops.qa_design.lang.psi.QaDesignNamedElement"
+    methods=[getName setName getValue getNameIdentifier getPresentation]
+}

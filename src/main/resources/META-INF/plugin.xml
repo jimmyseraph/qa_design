@@ -1,0 +1,159 @@
+<!-- Plugin Configuration File. Read more: https://plugins.jetbrains.com/docs/intellij/plugin-configuration-file.html -->
+<idea-plugin>
+    <!-- Unique identifier of the plugin. It should be FQN. It cannot be changed between the plugin versions. -->
+    <id>vip.testops.qa_design</id>
+
+    <!-- Public plugin name should be written in Title Case.
+         Guidelines: https://plugins.jetbrains.com/docs/marketplace/plugin-overview-page.html#plugin-name -->
+    <name>QA Designer</name>
+
+    <!-- A displayed Vendor name or Organization ID displayed on the Plugins Page. -->
+    <vendor email="jimmyseraph@testops.vip" url="https://github.com/jimmyseraph">TestOps</vendor>
+
+    <!-- Description of the plugin displayed on the Plugin Page and IDE Plugin Manager.
+         Simple HTML elements (text formatting, paragraphs, and lists) can be added inside of <![CDATA[ ]]> tag.
+         Guidelines: https://plugins.jetbrains.com/docs/marketplace/plugin-overview-page.html#plugin-description -->
+    <description><![CDATA[
+    <p>QA Designer is a powerful tool for test engineers. It offers a structured grammar for test engineers writing testcases in qd file.</p>
+    <p>In addition, with ai-model, QA Designer can chat with you as an assistant based on chat-gpt.</p>
+    <p>Please kindly let us know if you encounter any problem or have any suggestion, via <a href="mailto:jimmyseraph@testops.vip">jimmyseraph@testops.vip</a></p>
+    <h2>Basic Usage</h2>
+    <p>Make sure your IDE version is 2022.3 or later. Install the extension and enable it globally.</p>
+    <p>You can create/edit a file with the ".qd" extension which is the file type for QA Designer.</p>
+    <p>QA Design Language Syntax:</p>
+    <img src="https://s1.ax1x.com/2023/06/07/pCijn6f.jpg" alt="sample" border="0" />
+
+    <h2>Import / Export</h2>
+    <p>You can import your testcase design from your ms-excel by right-click the target directory in "Project view" and choose "Import from Excel".</p>
+    <p>Import action will generate several qd file named by "requirement ID".</p>
+    <p>And also you can export qd files by right-click the target directory or qd file in "Project view" and choose "Export to Excel".</p>
+    <p>You should set the fields mapping from ms-excel to qd file in "Settings -> Languages and Frameworks -> QA Design Settings -> Export/Import Settings"</p>
+
+    <h2>Enable Chat-GPT</h2>
+    <p>You can enable AI chat window by setting OpenAI API-Key in "Settings -> Languages and Frameworks -> QA Design Settings"</p>
+  ]]></description>
+
+    <!-- Product and plugin compatibility requirements.
+         Read more: https://plugins.jetbrains.com/docs/intellij/plugin-compatibility.html -->
+    <depends>com.intellij.modules.platform</depends>
+    <depends>org.intellij.plugins.markdown</depends>
+
+    <resource-bundle>messages.qadesign</resource-bundle>
+
+    <extensionPoints>
+        <!-- Add your own extension points here -->
+        <extensionPoint
+                name="settings.fieldMapping"
+                beanClass="vip.testops.qa_design.settings.FieldMapping"
+        >
+        </extensionPoint>
+    </extensionPoints>
+
+    <extensions defaultExtensionNs="vip.testops.qa_design.settings">
+        <!-- Add your own extensions here -->
+        <fieldMapping fieldName="Requirement ID" qaDesignKeyword="RequirementID" />
+        <fieldMapping fieldName="Requirement" qaDesignKeyword="Requirement" />
+        <fieldMapping fieldName="Test Point" qaDesignKeyword="TestPoint" />
+        <fieldMapping fieldName="Test Case" qaDesignKeyword="TestCase" />
+        <fieldMapping fieldName="Test Case Desc" qaDesignKeyword="TestCaseDesc" />
+        <fieldMapping fieldName="Test Case Data" qaDesignKeyword="TestCaseData" />
+        <fieldMapping fieldName="Test Case Step" qaDesignKeyword="TestCaseStep" />
+        <fieldMapping fieldName="Test Case Expected" qaDesignKeyword="TestCaseExpect" />
+        <fieldMapping fieldName="Test Case designer" />
+        <fieldMapping fieldName="Test Case executor" />
+    </extensions>
+
+
+    <!-- Extension points defined by the plugin.
+         Read more: https://plugins.jetbrains.com/docs/intellij/plugin-extension-points.html -->
+    <extensions defaultExtensionNs="com.intellij">
+        <fileType
+                name="Qa Design"
+                implementationClass="vip.testops.qa_design.QaDesignFileType"
+                fieldName="INSTANCE"
+                language="QaDesign"
+                extensions="qd"
+        />
+        <lang.parserDefinition
+                language="QaDesign"
+                implementationClass="vip.testops.qa_design.lang.QaDesignParserDefinition"
+        />
+        <lang.syntaxHighlighterFactory
+                language="QaDesign"
+                implementationClass="vip.testops.qa_design.lang.QaDesignSyntaxHighlighterFactory"
+        />
+        <colorSettingsPage
+                implementation="vip.testops.qa_design.lang.QaDesignColorSettingsPage"
+        />
+        <completion.contributor
+                language="QaDesign"
+                implementationClass="vip.testops.qa_design.completions.QaDesignCompletionContributor"
+        />
+        <lang.psiStructureViewFactory
+                language="QaDesign"
+                implementationClass="vip.testops.qa_design.lang.QaDesignStructureViewFactory"
+        />
+        <iconProvider implementation="vip.testops.qa_design.lang.QaDesignIconProvider"/>
+        <gotoSymbolContributor
+                implementation="vip.testops.qa_design.lang.QaDesignChooseByNameContributor"
+        />
+        <navbar implementation="vip.testops.qa_design.lang.QaDesignStructureAwareNavbar"/>
+        <lang.formatter
+                language="QaDesign"
+                implementationClass="vip.testops.qa_design.lang.QaDesignFormattingModelBuilder"/>
+        <lang.commenter
+                language="QaDesign"
+                implementationClass="vip.testops.qa_design.lang.QaDesignCommenter"/>
+        <toolWindow
+                id="Chat Window"
+                secondary="false"
+                icon="AllIcons.Toolwindows.WebToolWindow"
+                anchor="right"
+                doNotActivateOnStart="true"
+                factoryClass="vip.testops.qa_design.toolWindow.ChatToolWindowFactory"/>
+        <lang.foldingBuilder language="QaDesign"
+                             implementationClass="vip.testops.qa_design.lang.psi.QaDesignTestPointFoldingBuilder"/>
+        <lang.foldingBuilder language="QaDesign"
+                             implementationClass="vip.testops.qa_design.lang.psi.QaDesignTestCaseFoldingBuilder"/>
+        <applicationConfigurable
+                parentId="vip.testops.qa_design.settings.QaDesignConfigurable"
+                instance="vip.testops.qa_design.settings.QaDesignExportAndImportConfigurable"
+                id="vip.testops.qa_design.settings.QaDesignExportAndImportConfigurable"
+                displayName="Export/Import Settings"/>
+        />
+        <applicationConfigurable
+                parentId="language"
+                instance="vip.testops.qa_design.settings.QaDesignConfigurable"
+                id="vip.testops.qa_design.settings.QaDesignConfigurable"
+                displayName="QA Design Settings"/>
+        />
+        <applicationService
+                id="vip.testops.qa_design.settings.ExportAndImportSettings"
+                serviceImplementation="vip.testops.qa_design.settings.ExportAndImportSettings"
+        />
+        <applicationService
+                id="vip.testops.qa_design.settings.QaDesignSettings"
+                serviceImplementation="vip.testops.qa_design.settings.QaDesignSettings"
+        />
+        <applicationService
+                serviceInterface="vip.testops.qa_design.services.QaDesignChatService"
+                serviceImplementation="vip.testops.qa_design.services.impl.QaDesignChatServiceImpl"
+        />
+        <notificationGroup id="QaDesign Notification Group"
+                           displayType="BALLOON"
+                           key="notification.qa_design.group"
+        />
+    </extensions>
+    <actions>
+        <action id="vip.testops.qa_design.actions.ExportAction" class="vip.testops.qa_design.actions.ExportAction"
+                text="Export to Excel" description="Export to excel">
+            <add-to-group group-id="ProjectViewPopupMenu" anchor="last"/>
+            <keyboard-shortcut keymap="$default" first-keystroke="meta alt e"/>
+        </action>
+        <action id="vip.testops.qa_design.actions.ImportAction" class="vip.testops.qa_design.actions.ImportAction"
+                text="Import from Excel" description="Import from excel to QA Design">
+            <add-to-group group-id="ProjectViewPopupMenu" anchor="last"/>
+            <keyboard-shortcut keymap="$default" first-keystroke="meta alt i"/>
+        </action>
+    </actions>
+</idea-plugin>
