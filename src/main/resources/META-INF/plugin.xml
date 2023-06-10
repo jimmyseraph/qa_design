@@ -20,7 +20,7 @@
     <h2>Basic Usage</h2>
     <p>Make sure your IDE version is 2022.3 or later. Install the extension and enable it globally.</p>
     <p>You can create/edit a file with the ".qd" extension which is the file type for QA Designer.</p>
-
+    <p>Example: <a href="https://github.com/jimmyseraph/qa_design/blob/main/example.qd">example.qd</a></p>
     <h2>Import / Export</h2>
     <p>You can import your testcase design from your ms-excel by right-click the target directory in "Project view" and choose "Import from Excel".</p>
     <p>Import action will generate several qd file named by "requirement ID".</p>
