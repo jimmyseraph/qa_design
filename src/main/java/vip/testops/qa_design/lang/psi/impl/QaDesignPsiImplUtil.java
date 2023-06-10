@@ -75,6 +75,43 @@ public class QaDesignPsiImplUtil {
         }
     }
 
+    public static String getContent(QaDesignRuleFirstLine element) {
+        return getNodesContent(element.getNode().findChildByType(QaDesignTypes.CONTENT));
+    }
+
+    public static String getContent(QaDesignRuleTestPointDesign element) {
+        return getNodesContent(element.getNode().findChildByType(QaDesignTypes.CONTENT));
+    }
+
+    public static String getContent(QaDesignRuleTestCaseDesign element) {
+        return getNodesContent(element.getNode().findChildByType(QaDesignTypes.CONTENT));
+    }
+
+    public static String getContent(QaDesignRuleTestCaseDesc element) {
+        return getNodesContent(element.getNode().findChildByType(QaDesignTypes.CONTENT));
+    }
+
+    public static String getContent(QaDesignRuleTestCaseStep element) {
+        return getNodesContent(element.getNode().findChildByType(QaDesignTypes.CONTENT));
+    }
+
+    public static String getContent(QaDesignRuleTestCaseData element) {
+        return getNodesContent(element.getNode().findChildByType(QaDesignTypes.CONTENT));
+    }
+
+    public static String getContent(QaDesignRuleTestCaseExpect element) {
+        return getNodesContent(element.getNode().findChildByType(QaDesignTypes.CONTENT));
+    }
+
+    private static String getNodesContent(ASTNode contentNode) {
+        StringBuilder sb = new StringBuilder();
+        while (contentNode != null) {
+            sb.append(contentNode.getText()).append("\n");
+            contentNode = contentNode.getTreeNext();
+        }
+        return sb.toString();
+    }
+
     public static String getName(QaDesignRuleFirstLine element) {
         return QaDesignBundle.message("keywords.qa_design.requirement");
     }

@@ -16,22 +16,14 @@ import com.intellij.psi.TokenType;
 %eof}
 
 CRLF=[\r\n]
-WHITE_SPACE=[ \t\f]
+WHITE_SPACE=[ \t\f\r\n]
 //INDENT=[\ ]{2}|[\t]
-FIRST_VALUE_CHARACTER=[^ \n\f\\]| "\\"{CRLF} | "\\".
-VALUE_CHARACTER=[^\n\f\\]| "\\"{CRLF} | "\\".
+FIRST_VALUE_CHARACTER=[^ \n\f\r\n]
+VALUE_CHARACTER=[^\n\f\\] // "\\"{CRLF} | "\\".
+CONCAT_NEW_LINE = "\\"
 END_OF_LINE_COMMENT="#"[^\r\n]*
-//SUB_REQUIRMENT_KEY=需求子条目
-//TEST_POINT_KEY=测试要点
-//TEST_CASE_KEY=测试案例
-//TEST_CASE_NAME_KEY=案例名称
-//TEST_CASE_DESC_KEY=案例描述
-//TEST_CASE_DATA_KEY=测试数据
-//TEST_CASE_STEP_KEY=测试步骤
-//TEST_CASE_EXPECT_KEY=预期结果
 SEPARATOR=[:]
 KEY_CHARACTER=[^:\ \n\t\f\\]
-//KEY_WORD="需求子条目"|"测试要点"|"测试案例"|"案例名称"|"案例名称"|"案例描述"|"测试数据"|"测试步骤"|"预期结果"
 
 %state WAITING_VALUE
 
@@ -74,8 +66,10 @@ KEY_CHARACTER=[^:\ \n\t\f\\]
 //<YYINITIAL> {TEST_CASE_STEP_KEY}                            { yybegin(YYINITIAL); return QaDesignTypes.TEST_CASE_STEP_KEY; }
 //<YYINITIAL> {TEST_CASE_EXPECT_KEY}                          { yybegin(YYINITIAL); return QaDesignTypes.TEST_CASE_EXPECT_KEY; }
 <YYINITIAL> {SEPARATOR}                                     { yybegin(WAITING_VALUE); return QaDesignTypes.SEPARATOR; }
-<WAITING_VALUE> {CRLF}({CRLF}|{WHITE_SPACE})+               { yybegin(YYINITIAL); return TokenType.WHITE_SPACE; }
+<YYINITIAL> {CONCAT_NEW_LINE}                               { yybegin(WAITING_VALUE); return QaDesignTypes.CONCAT_NEW_LINE; }
+<WAITING_VALUE> {CONCAT_NEW_LINE}                           { yybegin(WAITING_VALUE); return QaDesignTypes.CONCAT_NEW_LINE; }
+//<WAITING_VALUE> {CRLF}({CRLF}|{WHITE_SPACE})+               { yybegin(YYINITIAL); return TokenType.WHITE_SPACE; }
 <WAITING_VALUE> {WHITE_SPACE}+                              { yybegin(WAITING_VALUE); return TokenType.WHITE_SPACE; }
-<WAITING_VALUE> {FIRST_VALUE_CHARACTER}{VALUE_CHARACTER}*   { yybegin(YYINITIAL); return QaDesignTypes.CONTENT; }
+<WAITING_VALUE> {FIRST_VALUE_CHARACTER}{VALUE_CHARACTER}*                          { yybegin(YYINITIAL); return QaDesignTypes.CONTENT; }
 ({CRLF}|{WHITE_SPACE})+                                     { yybegin(YYINITIAL); return TokenType.WHITE_SPACE; }
 [^]                                                         { return TokenType.BAD_CHARACTER; }

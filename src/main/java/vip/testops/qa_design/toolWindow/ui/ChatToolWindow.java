@@ -44,7 +44,6 @@ public class ChatToolWindow {
     private CycledList<ChatMessage> chatMessages = new CycledList<>(7,3);
 
     public ChatToolWindow(ToolWindow toolWindow, Project project) {
-        ObjectMapper mapper = defaultObjectMapper();
         this.project = project;
         contentPanel.setLayout(new BorderLayout(0, 20));
         contentPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));

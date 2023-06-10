@@ -35,7 +35,7 @@ public class ImportAction extends AnAction {
     public void actionPerformed(@NotNull AnActionEvent e) {
         ImportDialog dialog = new ImportDialog(e.getProject());
         Object obj = e.getData(CommonDataKeys.PSI_ELEMENT);
-        PsiDirectory targetDirectory = null;
+        PsiDirectory targetDirectory;
         if (obj instanceof PsiDirectory) {
             targetDirectory = (PsiDirectory) obj;
         } else if (obj instanceof PsiFile) {
@@ -74,17 +74,8 @@ public class ImportAction extends AnAction {
     private void generatePsiFiles(List<List<String>> data, PsiDirectory targetDirectory) throws IOException {
         List<QaDesignEntity> entities = parseExcelData(data);
         for (QaDesignEntity entity : entities) {
-            int startNum = 1;
             String filename = entity.getRequirementId().isBlank() ? "qa_design.qd" : entity.getRequirementId() + ".qd";
             filename = FileUtil.getNonRepetitiveFilename(filename, targetDirectory, "qd");
-//            if (targetDirectory.findFile(filename) != null) {
-//                filename = filename.substring(0, filename.lastIndexOf(".")) + "_" + startNum + ".qd";
-//                startNum++;
-//            }
-//            while (targetDirectory.findFile(filename) != null) {
-//                filename = filename.substring(0, filename.lastIndexOf("_")) + "_" + startNum + ".qd";
-//                startNum++;
-//            }
             File file = new File(targetDirectory.getVirtualFile().getPath(), filename);
 
             try (FileWriter writer = new FileWriter(file)) {
@@ -96,7 +87,7 @@ public class ImportAction extends AnAction {
                     writer.write(testPointLineContent);
                     writer.write("\n");
                     for (QaDesignTestCase testCase : testPoint.getTestCases()) {
-                        String testCaseLineContent = "\t" + "测试案例" + ": " + testCase.getName().replace("\n", "\\\n");
+                        String testCaseLineContent = "\t" + QaDesignKeyword.TEST_CASE + ": " + testCase.getName().replace("\n", "\\\n");
                         writer.write(testCaseLineContent);
                         writer.write("\n");
                         String testCaseDescLineContent = "\t\t" + QaDesignKeyword.TEST_CASE_DESC.getName() + ": " + testCase.getDesc().replace("\n", "\\\n");

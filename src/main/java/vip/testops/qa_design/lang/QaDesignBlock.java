@@ -27,21 +27,48 @@ public class QaDesignBlock extends AbstractBlock {
         ASTNode child = myNode.getFirstChildNode();
         while (child != null) {
             if (child.getElementType() != TokenType.WHITE_SPACE) {
+                Alignment alignment = Alignment.createAlignment();
                 int level = 0;
-                if (child.getElementType() == QaDesignTypes.TEST_CASE_NAME_KEY) {
+                if (child.getElementType() == QaDesignTypes.RULE_TEST_CASE_DESIGN) {
                     level = 1;
                 } else if (
-                        child.getElementType() == QaDesignTypes.TEST_CASE_DESC_KEY ||
-                        child.getElementType() == QaDesignTypes.TEST_CASE_DATA_KEY ||
-                        child.getElementType() == QaDesignTypes.TEST_CASE_STEP_KEY ||
-                        child.getElementType() == QaDesignTypes.TEST_CASE_EXPECT_KEY
+                        child.getElementType() == QaDesignTypes.RULE_TEST_CASE_DESC ||
+                        child.getElementType() == QaDesignTypes.RULE_TEST_CASE_DATA ||
+                        child.getElementType() == QaDesignTypes.RULE_TEST_CASE_STEP ||
+                        child.getElementType() == QaDesignTypes.RULE_TEST_CASE_EXPECT
                 ) {
-                    level = 2;
+                    level = 1;
+                } if (child.getElementType() == QaDesignTypes.CONTENT) {
+                    if (child.getPsi().getPrevSibling() != null
+                            && child.getPsi().getPrevSibling().getPrevSibling() != null
+                            && child.getPsi().getPrevSibling().getNode().getElementType() == TokenType.WHITE_SPACE
+                            && child.getPsi().getPrevSibling().getPrevSibling().getNode().getElementType() == QaDesignTypes.CONCAT_NEW_LINE
+                    ) {
+                        level = 2;
+                    }
+                    else if (child.getPsi().getPrevSibling() != null
+                            && child.getPsi().getPrevSibling().getNode().getElementType() == QaDesignTypes.CONCAT_NEW_LINE
+                    ) {
+                        level = 2;
+                    } else if (child.getPsi().getPrevSibling() != null
+                            && child.getPsi().getPrevSibling().getNode().getElementType() == QaDesignTypes.SEPARATOR
+                    ) {
+                        level = 2;
+                    } else if (child.getPsi().getPrevSibling() != null
+                            && child.getPsi().getPrevSibling().getPrevSibling() != null
+                            && child.getPsi().getPrevSibling().getNode().getElementType() == TokenType.WHITE_SPACE
+                            && child.getPsi().getPrevSibling().getPrevSibling().getNode().getElementType() == QaDesignTypes.SEPARATOR
+                    ){
+                        level = 2;
+                    }
+                }
+                if (level == 2 && blocks.size() > 1) {
+                    alignment = Alignment.createChildAlignment(blocks.get(1).getAlignment());
                 }
                 Block block = new QaDesignBlock(
                         child,
                         Wrap.createWrap(WrapType.NONE, false),
-                        Alignment.createAlignment(),
+                        alignment,
                         spacingBuilder,
                         level
                 );

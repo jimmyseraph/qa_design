@@ -35,14 +35,12 @@ public class ExportAction extends AnAction {
         List<PsiFile> qaDesignFiles = new ArrayList<>();
         Object obj = e.getData(CommonDataKeys.PSI_ELEMENT);
         String defaultExportFileName = "unnamed.xlsx";
-        if (obj instanceof PsiDirectory) {
-            PsiDirectory directory = (PsiDirectory) obj;
+        if (obj instanceof PsiDirectory directory) {
             String dirName = directory.getName();
             defaultExportFileName = dirName + ".xlsx";
             qaDesignFiles = getPsiFiles(directory, psiFile -> psiFile.getFileType().getName().equals(QaDesignBundle.message("fileType.qa_design.name")));
 
-        } else if (obj instanceof PsiFile) {
-            PsiFile file = (PsiFile) obj;
+        } else if (obj instanceof PsiFile file) {
             if (file.getFileType().getName().equals(QaDesignBundle.message("fileType.qa_design.name"))) {
                 qaDesignFiles.add(file);
                 String suffix = "." + QaDesignBundle.message("fileType.qa_design.extension");
@@ -122,42 +120,42 @@ public class ExportAction extends AnAction {
         String requirement = "";
         ASTNode firstLineNode = root.getNode().findChildByType(QaDesignTypes.RULE_FIRST_LINE);
         if(firstLineNode != null) {
-            requirement = ((QaDesignRuleFirstLineImpl)firstLineNode.getPsi()).getValue();
+            requirement = ((QaDesignRuleFirstLineImpl)firstLineNode.getPsi()).getContent();
         }
         ASTNode[] testPointDesignNodes = root.getNode().getChildren(TokenSet.create(QaDesignTypes.RULE_TEST_POINT_DESIGN));
         for(ASTNode testPointDesignNode : testPointDesignNodes) {
-            String testPoint = ((QaDesignRuleTestPointDesignImpl)testPointDesignNode.getPsi()).getValue();
+            String testPoint = ((QaDesignRuleTestPointDesignImpl)testPointDesignNode.getPsi()).getContent();
             ASTNode[] testCaseDesignNodes = testPointDesignNode.getChildren(TokenSet.create(QaDesignTypes.RULE_TEST_CASE_DESIGN));
             for(ASTNode testCaseDesignNode : testCaseDesignNodes) {
                 List<String> testCase = new ArrayList<>();
                 testCase.add(requirementId);
                 testCase.add(requirement);
                 testCase.add(testPoint);
-                testCase.add(((QaDesignRuleTestCaseDesignImpl)testCaseDesignNode.getPsi()).getValue());
+                testCase.add(((QaDesignRuleTestCaseDesignImpl)testCaseDesignNode.getPsi()).getContent());
                 ASTNode testCaseDescNode = testCaseDesignNode.findChildByType(QaDesignTypes.RULE_TEST_CASE_DESC);
                 if(testCaseDescNode != null) {
-                    testCase.add(((QaDesignRuleTestCaseDescImpl)testCaseDescNode.getPsi()).getValue());
+                    testCase.add(((QaDesignRuleTestCaseDescImpl)testCaseDescNode.getPsi()).getContent());
                 } else {
                     testCase.add("");
                 }
 
                 ASTNode testCaseDataNode = testCaseDesignNode.findChildByType(QaDesignTypes.RULE_TEST_CASE_DATA);
                 if(testCaseDataNode != null) {
-                    testCase.add(((QaDesignRuleTestCaseDataImpl)testCaseDataNode.getPsi()).getValue());
+                    testCase.add(((QaDesignRuleTestCaseDataImpl)testCaseDataNode.getPsi()).getContent());
                 } else {
                     testCase.add("");
                 }
 
                 ASTNode testCaseStepNode = testCaseDesignNode.findChildByType(QaDesignTypes.RULE_TEST_CASE_STEP);
                 if(testCaseStepNode != null) {
-                    testCase.add(((QaDesignRuleTestCaseStepImpl)testCaseStepNode.getPsi()).getValue());
+                    testCase.add(((QaDesignRuleTestCaseStepImpl)testCaseStepNode.getPsi()).getContent());
                 } else {
                     testCase.add("");
                 }
 
                 ASTNode testCaseExpectNode = testCaseDesignNode.findChildByType(QaDesignTypes.RULE_TEST_CASE_EXPECT);
                 if(testCaseExpectNode != null) {
-                    testCase.add(((QaDesignRuleTestCaseExpectImpl)testCaseExpectNode.getPsi()).getValue());
+                    testCase.add(((QaDesignRuleTestCaseExpectImpl)testCaseExpectNode.getPsi()).getContent());
                 } else {
                     testCase.add("");
                 }

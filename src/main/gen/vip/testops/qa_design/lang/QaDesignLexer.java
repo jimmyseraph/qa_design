@@ -37,7 +37,7 @@ class QaDesignLexer implements FlexLexer {
   private static final int [] ZZ_CMAP_TOP = zzUnpackcmap_top();
 
   private static final String ZZ_CMAP_TOP_PACKED_0 =
-    "\1\0\37\u0100\1\u0200\267\u0100\10\u0300\u1020\u0100";
+    "\1\0\u10ff\u0100";
 
   private static int [] zzUnpackcmap_top() {
     int [] result = new int[4352];
@@ -65,12 +65,11 @@ class QaDesignLexer implements FlexLexer {
   private static final int [] ZZ_CMAP_BLOCKS = zzUnpackcmap_blocks();
 
   private static final String ZZ_CMAP_BLOCKS_PACKED_0 =
-    "\11\0\1\1\1\2\1\3\1\4\1\5\22\0\1\6"+
-    "\2\0\1\7\26\0\1\10\41\0\1\11\50\0\1\3"+
-    "\u01a2\0\2\3\326\0\u0100\3";
+    "\11\0\1\1\1\2\1\0\1\3\1\4\22\0\1\5"+
+    "\2\0\1\6\26\0\1\7\41\0\1\10\u01a3\0";
 
   private static int [] zzUnpackcmap_blocks() {
-    int [] result = new int[1024];
+    int [] result = new int[512];
     int offset = 0;
     offset = zzUnpackcmap_blocks(ZZ_CMAP_BLOCKS_PACKED_0, offset, result);
     return result;
@@ -95,10 +94,10 @@ class QaDesignLexer implements FlexLexer {
 
   private static final String ZZ_ACTION_PACKED_0 =
     "\2\0\1\1\1\2\1\1\1\3\1\4\1\5\1\6"+
-    "\2\7\1\6\1\5\1\3\1\0\1\6\1\2";
+    "\2\7\1\5\1\3";
 
   private static int [] zzUnpackAction() {
-    int [] result = new int[17];
+    int [] result = new int[13];
     int offset = 0;
     offset = zzUnpackAction(ZZ_ACTION_PACKED_0, offset, result);
     return result;
@@ -123,12 +122,11 @@ class QaDesignLexer implements FlexLexer {
   private static final int [] ZZ_ROWMAP = zzUnpackRowMap();
 
   private static final String ZZ_ROWMAP_PACKED_0 =
-    "\0\0\0\12\0\24\0\36\0\50\0\62\0\74\0\74"+
-    "\0\106\0\120\0\132\0\144\0\156\0\170\0\156\0\202"+
-    "\0\144";
+    "\0\0\0\11\0\22\0\33\0\44\0\55\0\66\0\66"+
+    "\0\77\0\110\0\121\0\77\0\132";
 
   private static int [] zzUnpackRowMap() {
-    int [] result = new int[17];
+    int [] result = new int[13];
     int offset = 0;
     offset = zzUnpackRowMap(ZZ_ROWMAP_PACKED_0, offset, result);
     return result;
@@ -151,21 +149,16 @@ class QaDesignLexer implements FlexLexer {
   private static final int [] ZZ_TRANS = zzUnpacktrans();
 
   private static final String ZZ_TRANS_PACKED_0 =
-    "\1\3\2\4\1\3\1\4\1\5\1\4\1\6\1\7"+
-    "\1\10\1\11\1\12\1\4\1\11\1\13\1\14\1\13"+
-    "\2\11\1\15\1\3\2\0\1\3\1\0\1\3\1\0"+
-    "\1\3\3\0\2\4\1\0\3\4\3\0\1\3\2\4"+
-    "\1\3\1\4\1\5\1\4\1\3\2\0\1\6\1\16"+
-    "\1\0\1\6\1\16\1\3\1\16\1\6\2\16\12\0"+
-    "\2\11\1\0\1\11\1\0\4\11\1\17\1\11\1\12"+
-    "\1\4\1\11\1\13\1\20\1\12\2\11\1\17\1\0"+
-    "\1\13\1\4\1\0\1\13\1\4\1\13\3\0\1\11"+
-    "\1\21\1\4\1\11\1\4\2\21\2\11\1\17\3\11"+
-    "\2\0\5\11\2\16\1\0\2\16\1\0\4\16\1\11"+
-    "\1\20\1\4\1\11\1\4\2\20\2\11\1\17";
+    "\1\3\3\4\1\5\1\4\1\6\1\7\1\10\1\11"+
+    "\1\12\4\13\2\11\1\14\1\3\3\0\1\3\1\0"+
+    "\1\3\3\0\5\4\3\0\1\3\3\4\1\5\1\4"+
+    "\1\3\2\0\1\6\1\15\1\0\1\15\1\3\1\15"+
+    "\1\6\2\15\11\0\2\11\2\0\4\11\1\0\1\11"+
+    "\1\12\2\13\2\12\2\11\2\0\5\13\3\0\2\15"+
+    "\1\0\1\15\1\0\4\15";
 
   private static int [] zzUnpacktrans() {
-    int [] result = new int[140];
+    int [] result = new int[99];
     int offset = 0;
     offset = zzUnpacktrans(ZZ_TRANS_PACKED_0, offset, result);
     return result;
@@ -203,10 +196,10 @@ class QaDesignLexer implements FlexLexer {
   private static final int [] ZZ_ATTRIBUTE = zzUnpackAttribute();
 
   private static final String ZZ_ATTRIBUTE_PACKED_0 =
-    "\2\0\4\1\2\11\6\1\1\0\2\1";
+    "\2\0\4\1\2\11\5\1";
 
   private static int [] zzUnpackAttribute() {
-    int [] result = new int[17];
+    int [] result = new int[13];
     int offset = 0;
     offset = zzUnpackAttribute(ZZ_ATTRIBUTE_PACKED_0, offset, result);
     return result;
@@ -572,7 +565,7 @@ class QaDesignLexer implements FlexLexer {
           // fall through
           case 11: break;
           case 5:
-            { return TokenType.BAD_CHARACTER;
+            { yybegin(WAITING_VALUE); return QaDesignTypes.CONCAT_NEW_LINE;
             }
           // fall through
           case 12: break;

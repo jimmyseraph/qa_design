@@ -14,6 +14,8 @@ public interface QaDesignRuleFirstLine extends QaDesignNamedElement {
 
   String getValue();
 
+  String getContent();
+
   PsiElement getNameIdentifier();
 
   ItemPresentation getPresentation();

@@ -43,6 +43,11 @@ public class QaDesignRuleFirstLineImpl extends QaDesignNamedElementImpl implemen
   }
 
   @Override
+  public String getContent() {
+    return QaDesignPsiImplUtil.getContent(this);
+  }
+
+  @Override
   public PsiElement getNameIdentifier() {
     return QaDesignPsiImplUtil.getNameIdentifier(this);
   }

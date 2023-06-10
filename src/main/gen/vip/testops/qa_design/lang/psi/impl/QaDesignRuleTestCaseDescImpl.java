@@ -43,6 +43,11 @@ public class QaDesignRuleTestCaseDescImpl extends QaDesignNamedElementImpl imple
   }
 
   @Override
+  public String getContent() {
+    return QaDesignPsiImplUtil.getContent(this);
+  }
+
+  @Override
   public PsiElement getNameIdentifier() {
     return QaDesignPsiImplUtil.getNameIdentifier(this);
   }

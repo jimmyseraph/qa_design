@@ -93,19 +93,41 @@ public class QaDesignParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // REQUIREMENT_KEY SEPARATOR CONTENT
+  // REQUIREMENT_KEY SEPARATOR CONTENT (CONCAT_NEW_LINE CONTENT)*
   public static boolean rule_first_line(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "rule_first_line")) return false;
     if (!nextTokenIs(b, REQUIREMENT_KEY)) return false;
     boolean r;
     Marker m = enter_section_(b);
     r = consumeTokens(b, 0, REQUIREMENT_KEY, SEPARATOR, CONTENT);
+    r = r && rule_first_line_3(b, l + 1);
     exit_section_(b, m, RULE_FIRST_LINE, r);
     return r;
   }
 
+  // (CONCAT_NEW_LINE CONTENT)*
+  private static boolean rule_first_line_3(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "rule_first_line_3")) return false;
+    while (true) {
+      int c = current_position_(b);
+      if (!rule_first_line_3_0(b, l + 1)) break;
+      if (!empty_element_parsed_guard_(b, "rule_first_line_3", c)) break;
+    }
+    return true;
+  }
+
+  // CONCAT_NEW_LINE CONTENT
+  private static boolean rule_first_line_3_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "rule_first_line_3_0")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = consumeTokens(b, 0, CONCAT_NEW_LINE, CONTENT);
+    exit_section_(b, m, null, r);
+    return r;
+  }
+
   /* ********************************************************** */
-  // TEST_CASE_DATA_KEY SEPARATOR CONTENT*
+  // TEST_CASE_DATA_KEY SEPARATOR (CONCAT_NEW_LINE? CONTENT)*
   public static boolean rule_test_case_data(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "rule_test_case_data")) return false;
     if (!nextTokenIs(b, TEST_CASE_DATA_KEY)) return false;
@@ -117,110 +139,184 @@ public class QaDesignParser implements PsiParser, LightPsiParser {
     return r;
   }
 
-  // CONTENT*
+  // (CONCAT_NEW_LINE? CONTENT)*
   private static boolean rule_test_case_data_2(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "rule_test_case_data_2")) return false;
     while (true) {
       int c = current_position_(b);
-      if (!consumeToken(b, CONTENT)) break;
+      if (!rule_test_case_data_2_0(b, l + 1)) break;
       if (!empty_element_parsed_guard_(b, "rule_test_case_data_2", c)) break;
     }
     return true;
   }
 
+  // CONCAT_NEW_LINE? CONTENT
+  private static boolean rule_test_case_data_2_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "rule_test_case_data_2_0")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = rule_test_case_data_2_0_0(b, l + 1);
+    r = r && consumeToken(b, CONTENT);
+    exit_section_(b, m, null, r);
+    return r;
+  }
+
+  // CONCAT_NEW_LINE?
+  private static boolean rule_test_case_data_2_0_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "rule_test_case_data_2_0_0")) return false;
+    consumeToken(b, CONCAT_NEW_LINE);
+    return true;
+  }
+
   /* ********************************************************** */
-  // TEST_CASE_DESC_KEY SEPARATOR CONTENT
+  // TEST_CASE_DESC_KEY SEPARATOR CONTENT (CONCAT_NEW_LINE CONTENT)*
   public static boolean rule_test_case_desc(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "rule_test_case_desc")) return false;
     if (!nextTokenIs(b, TEST_CASE_DESC_KEY)) return false;
     boolean r;
     Marker m = enter_section_(b);
     r = consumeTokens(b, 0, TEST_CASE_DESC_KEY, SEPARATOR, CONTENT);
+    r = r && rule_test_case_desc_3(b, l + 1);
     exit_section_(b, m, RULE_TEST_CASE_DESC, r);
     return r;
   }
 
+  // (CONCAT_NEW_LINE CONTENT)*
+  private static boolean rule_test_case_desc_3(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "rule_test_case_desc_3")) return false;
+    while (true) {
+      int c = current_position_(b);
+      if (!rule_test_case_desc_3_0(b, l + 1)) break;
+      if (!empty_element_parsed_guard_(b, "rule_test_case_desc_3", c)) break;
+    }
+    return true;
+  }
+
+  // CONCAT_NEW_LINE CONTENT
+  private static boolean rule_test_case_desc_3_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "rule_test_case_desc_3_0")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = consumeTokens(b, 0, CONCAT_NEW_LINE, CONTENT);
+    exit_section_(b, m, null, r);
+    return r;
+  }
+
   /* ********************************************************** */
-  // TEST_CASE_NAME_KEY SEPARATOR CONTENT rule_test_case_desc rule_test_case_data? rule_test_case_step rule_test_case_expect
+  // TEST_CASE_NAME_KEY SEPARATOR CONTENT (CONCAT_NEW_LINE CONTENT)* rule_test_case_desc rule_test_case_data? rule_test_case_step rule_test_case_expect
   public static boolean rule_test_case_design(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "rule_test_case_design")) return false;
     if (!nextTokenIs(b, TEST_CASE_NAME_KEY)) return false;
     boolean r;
     Marker m = enter_section_(b);
     r = consumeTokens(b, 0, TEST_CASE_NAME_KEY, SEPARATOR, CONTENT);
+    r = r && rule_test_case_design_3(b, l + 1);
     r = r && rule_test_case_desc(b, l + 1);
-    r = r && rule_test_case_design_4(b, l + 1);
+    r = r && rule_test_case_design_5(b, l + 1);
     r = r && rule_test_case_step(b, l + 1);
     r = r && rule_test_case_expect(b, l + 1);
     exit_section_(b, m, RULE_TEST_CASE_DESIGN, r);
     return r;
   }
 
+  // (CONCAT_NEW_LINE CONTENT)*
+  private static boolean rule_test_case_design_3(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "rule_test_case_design_3")) return false;
+    while (true) {
+      int c = current_position_(b);
+      if (!rule_test_case_design_3_0(b, l + 1)) break;
+      if (!empty_element_parsed_guard_(b, "rule_test_case_design_3", c)) break;
+    }
+    return true;
+  }
+
+  // CONCAT_NEW_LINE CONTENT
+  private static boolean rule_test_case_design_3_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "rule_test_case_design_3_0")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = consumeTokens(b, 0, CONCAT_NEW_LINE, CONTENT);
+    exit_section_(b, m, null, r);
+    return r;
+  }
+
   // rule_test_case_data?
-  private static boolean rule_test_case_design_4(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "rule_test_case_design_4")) return false;
+  private static boolean rule_test_case_design_5(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "rule_test_case_design_5")) return false;
     rule_test_case_data(b, l + 1);
     return true;
   }
 
   /* ********************************************************** */
-  // TEST_CASE_EXPECT_KEY SEPARATOR CONTENT+
+  // TEST_CASE_EXPECT_KEY SEPARATOR CONTENT (CONCAT_NEW_LINE CONTENT)*
   public static boolean rule_test_case_expect(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "rule_test_case_expect")) return false;
     if (!nextTokenIs(b, TEST_CASE_EXPECT_KEY)) return false;
     boolean r;
     Marker m = enter_section_(b);
-    r = consumeTokens(b, 0, TEST_CASE_EXPECT_KEY, SEPARATOR);
-    r = r && rule_test_case_expect_2(b, l + 1);
+    r = consumeTokens(b, 0, TEST_CASE_EXPECT_KEY, SEPARATOR, CONTENT);
+    r = r && rule_test_case_expect_3(b, l + 1);
     exit_section_(b, m, RULE_TEST_CASE_EXPECT, r);
     return r;
   }
 
-  // CONTENT+
-  private static boolean rule_test_case_expect_2(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "rule_test_case_expect_2")) return false;
+  // (CONCAT_NEW_LINE CONTENT)*
+  private static boolean rule_test_case_expect_3(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "rule_test_case_expect_3")) return false;
+    while (true) {
+      int c = current_position_(b);
+      if (!rule_test_case_expect_3_0(b, l + 1)) break;
+      if (!empty_element_parsed_guard_(b, "rule_test_case_expect_3", c)) break;
+    }
+    return true;
+  }
+
+  // CONCAT_NEW_LINE CONTENT
+  private static boolean rule_test_case_expect_3_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "rule_test_case_expect_3_0")) return false;
     boolean r;
     Marker m = enter_section_(b);
-    r = consumeToken(b, CONTENT);
-    while (r) {
-      int c = current_position_(b);
-      if (!consumeToken(b, CONTENT)) break;
-      if (!empty_element_parsed_guard_(b, "rule_test_case_expect_2", c)) break;
-    }
+    r = consumeTokens(b, 0, CONCAT_NEW_LINE, CONTENT);
     exit_section_(b, m, null, r);
     return r;
   }
 
   /* ********************************************************** */
-  // TEST_CASE_STEP_KEY SEPARATOR CONTENT+
+  // TEST_CASE_STEP_KEY SEPARATOR CONTENT (CONCAT_NEW_LINE CONTENT)*
   public static boolean rule_test_case_step(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "rule_test_case_step")) return false;
     if (!nextTokenIs(b, TEST_CASE_STEP_KEY)) return false;
     boolean r;
     Marker m = enter_section_(b);
-    r = consumeTokens(b, 0, TEST_CASE_STEP_KEY, SEPARATOR);
-    r = r && rule_test_case_step_2(b, l + 1);
+    r = consumeTokens(b, 0, TEST_CASE_STEP_KEY, SEPARATOR, CONTENT);
+    r = r && rule_test_case_step_3(b, l + 1);
     exit_section_(b, m, RULE_TEST_CASE_STEP, r);
     return r;
   }
 
-  // CONTENT+
-  private static boolean rule_test_case_step_2(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "rule_test_case_step_2")) return false;
+  // (CONCAT_NEW_LINE CONTENT)*
+  private static boolean rule_test_case_step_3(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "rule_test_case_step_3")) return false;
+    while (true) {
+      int c = current_position_(b);
+      if (!rule_test_case_step_3_0(b, l + 1)) break;
+      if (!empty_element_parsed_guard_(b, "rule_test_case_step_3", c)) break;
+    }
+    return true;
+  }
+
+  // CONCAT_NEW_LINE CONTENT
+  private static boolean rule_test_case_step_3_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "rule_test_case_step_3_0")) return false;
     boolean r;
     Marker m = enter_section_(b);
-    r = consumeToken(b, CONTENT);
-    while (r) {
-      int c = current_position_(b);
-      if (!consumeToken(b, CONTENT)) break;
-      if (!empty_element_parsed_guard_(b, "rule_test_case_step_2", c)) break;
-    }
+    r = consumeTokens(b, 0, CONCAT_NEW_LINE, CONTENT);
     exit_section_(b, m, null, r);
     return r;
   }
 
   /* ********************************************************** */
-  // TEST_POINT_KEY SEPARATOR CONTENT (rule_test_case_design)+
+  // TEST_POINT_KEY SEPARATOR CONTENT (CONCAT_NEW_LINE CONTENT)* (rule_test_case_design)*
   public static boolean rule_test_point_design(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "rule_test_point_design")) return false;
     if (!nextTokenIs(b, TEST_POINT_KEY)) return false;
@@ -228,28 +324,46 @@ public class QaDesignParser implements PsiParser, LightPsiParser {
     Marker m = enter_section_(b);
     r = consumeTokens(b, 0, TEST_POINT_KEY, SEPARATOR, CONTENT);
     r = r && rule_test_point_design_3(b, l + 1);
+    r = r && rule_test_point_design_4(b, l + 1);
     exit_section_(b, m, RULE_TEST_POINT_DESIGN, r);
     return r;
   }
 
-  // (rule_test_case_design)+
+  // (CONCAT_NEW_LINE CONTENT)*
   private static boolean rule_test_point_design_3(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "rule_test_point_design_3")) return false;
-    boolean r;
-    Marker m = enter_section_(b);
-    r = rule_test_point_design_3_0(b, l + 1);
-    while (r) {
+    while (true) {
       int c = current_position_(b);
       if (!rule_test_point_design_3_0(b, l + 1)) break;
       if (!empty_element_parsed_guard_(b, "rule_test_point_design_3", c)) break;
     }
+    return true;
+  }
+
+  // CONCAT_NEW_LINE CONTENT
+  private static boolean rule_test_point_design_3_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "rule_test_point_design_3_0")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = consumeTokens(b, 0, CONCAT_NEW_LINE, CONTENT);
     exit_section_(b, m, null, r);
     return r;
   }
 
+  // (rule_test_case_design)*
+  private static boolean rule_test_point_design_4(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "rule_test_point_design_4")) return false;
+    while (true) {
+      int c = current_position_(b);
+      if (!rule_test_point_design_4_0(b, l + 1)) break;
+      if (!empty_element_parsed_guard_(b, "rule_test_point_design_4", c)) break;
+    }
+    return true;
+  }
+
   // (rule_test_case_design)
-  private static boolean rule_test_point_design_3_0(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "rule_test_point_design_3_0")) return false;
+  private static boolean rule_test_point_design_4_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "rule_test_point_design_4_0")) return false;
     boolean r;
     Marker m = enter_section_(b);
     r = rule_test_case_design(b, l + 1);

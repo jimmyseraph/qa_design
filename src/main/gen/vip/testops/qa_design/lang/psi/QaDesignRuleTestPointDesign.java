@@ -17,6 +17,8 @@ public interface QaDesignRuleTestPointDesign extends QaDesignNamedElement {
 
   String getValue();
 
+  String getContent();
+
   PsiElement getNameIdentifier();
 
   ItemPresentation getPresentation();

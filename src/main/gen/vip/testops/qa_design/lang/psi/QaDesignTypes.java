@@ -18,6 +18,7 @@ public interface QaDesignTypes {
   IElementType RULE_TEST_POINT_DESIGN = new QaDesignElementType("RULE_TEST_POINT_DESIGN");
 
   IElementType COMMENT = new QaDesignTokenType("COMMENT");
+  IElementType CONCAT_NEW_LINE = new QaDesignTokenType("CONCAT_NEW_LINE");
   IElementType CONTENT = new QaDesignTokenType("CONTENT");
   IElementType CRLF = new QaDesignTokenType("CRLF");
   IElementType INSIDE = new QaDesignTokenType("INSIDE");
