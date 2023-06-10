@@ -42,8 +42,6 @@ bin/
 ### Mac OS ###
 .DS_Store
 
-*.qd
-
 *.skeleton
 jflex*.jar
 .run

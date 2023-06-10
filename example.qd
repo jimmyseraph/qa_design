@@ -1,0 +1,90 @@
+Requirement: User can change password by entering personal settings page. \
+           New password must not the same as the previous one, and the length must between 6 and 18 characters.
+
+TestPoint: change password with different value
+    TestCase: Change Password with valid data
+        TestCaseDesc: Verify if user can change their password with valid data successfully
+        TestCaseData: - old password: "testpass1" \
+                    - new password: "newtestpass1"
+        TestCaseStep:
+                    1. Login with valid credentials.\
+                    2. Navigate to personal settings page.\
+                    3. Enter valid old password.\
+                    4. Enter valid new password.\
+                    5. Click "Change Password" button.
+        TestCaseExpect:
+                      - Verify user should see a success message.\
+                      - Verify user should log out and login again using the new password.
+
+    TestCase: Change Password with invalid old password
+        TestCaseDesc: Verify if user can't change their password if they provide an invalid old password.
+        TestCaseData:
+        - old password"wrongpassword" \
+                    - new password "testpass2"
+        TestCaseStep:
+        1. Login with valid credentials. \
+                    2. Navigate to personal settings page.\
+                    3. Enter invalid old password. \
+                    4. Enter valid new password.\
+                    5. Click "Change Password" button.
+        TestCaseExpect:
+        - Verify user should see an error message informing that old password is incorrect.
+
+    TestCase: Change Password with previous password
+        TestCaseDesc: Verify if user can't change their password with a password that was used previously
+        TestCaseStep:
+        1. Login with valid credentials.\
+                    2. Navigate to personal settings page.\
+                    3. Enter old password.\
+                    4. Enter a previous used password.\
+                    5. Click "Change Password" button.
+        TestCaseExpect:
+        - Verify user should see an error message informing the new password is already used before.
+
+    TestCase: Change Password with too short password
+        TestCaseDesc: Verify if user can't change their password with a new password that is too short
+        TestCaseData: \
+                    - old password: "testpass1"\
+                    - new password: "abc"
+        TestCaseStep:
+        1. Login with valid credentials.\
+                    2. Navigate to personal settings page.\
+                    3. Enter old password.\
+                    4. Enter a new password that is too short.\
+                    5. Click "Change Password" button.
+        TestCaseExpect:
+        - Verify user should see an error message informing that the new password is too short.
+
+    TestCase: Change Password with too long password
+        TestCaseDesc: Verify if user can't change their password with a new password that is too long
+        TestCaseData: \
+                    - old password: "testpass1"\
+                    - new password: "averylongpasswordthatshouldnotallowinthissystem"
+        TestCaseStep:
+        1. Login with valid credentials.\
+                    2. Navigate to personal settings page.\
+                    3. Enter old password.\
+                    4. Enter a new password that is too long.\
+                    5. Click "Change Password" button.
+        TestCaseExpect:
+        - Verify user should see an error message informing that the new password is too long.
+
+    TestCase: PasswordChange_ValidPassword
+        TestCaseDesc: Test password change for valid password
+        TestCaseData: Current password: abcd1234, New password: efgh5678
+        TestCaseStep:
+        1. Go to personal settings page. \
+                    2. Enter the current password "abcd1234". \
+                    3. Enter a new valid password "efgh5678". \
+                    4. Click on Change Password button.
+        TestCaseExpect: Password changed successfully.
+
+    TestCase: PasswordChange_SamePassword
+        TestCaseDesc: Test password change when new password is the same as current password
+        TestCaseData: Current password: efgh5678, New password: efgh5678
+        TestCaseStep:
+        1. Go to personal settings page. \
+                    2. Enter the current password "efgh5678". \
+                    3. Enter the same password as the current password "efgh5678". \
+                    4. Click on Change Password button.
+        TestCaseExpect: Password not changed and error
