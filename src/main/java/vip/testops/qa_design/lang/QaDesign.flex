@@ -4,7 +4,6 @@ import com.intellij.lexer.FlexLexer;
 import com.intellij.psi.tree.IElementType;
 import vip.testops.qa_design.QaDesignBundle;import vip.testops.qa_design.lang.psi.QaDesignTypes;
 import com.intellij.psi.TokenType;
-
 %%
 
 %class QaDesignLexer
@@ -17,19 +16,20 @@ import com.intellij.psi.TokenType;
 
 CRLF=[\r\n]
 WHITE_SPACE=[ \t\f\r\n]
-//INDENT=[\ ]{2}|[\t]
 FIRST_VALUE_CHARACTER=[^ \n\f\r\n]
-VALUE_CHARACTER=[^\n\f\\] // "\\"{CRLF} | "\\".
+VALUE_CHARACTER=[^\n\f\\]
 CONCAT_NEW_LINE = "\\"
 END_OF_LINE_COMMENT="#"[^\r\n]*
 SEPARATOR=[:]
-KEY_CHARACTER=[^:\ \n\t\f\\]
+KEY_CHARACTER=[^:\ \n\t\f\\\(\)\"]
 
 %state WAITING_VALUE
-
+%state WAITING_LINKED_METHOD
 %%
 
 <YYINITIAL> {END_OF_LINE_COMMENT}                           { yybegin(YYINITIAL); return QaDesignTypes.COMMENT; }
+<YYINITIAL> @@link\({WHITE_SPACE}*\"                              { yybegin(WAITING_LINKED_METHOD); return QaDesignTypes.LEFT_BOUNDARY; }
+
 <YYINITIAL> {KEY_CHARACTER}+                                {
                                                                 yybegin(YYINITIAL);
                                                                 String text = yytext().toString().trim();
@@ -53,23 +53,26 @@ KEY_CHARACTER=[^:\ \n\t\f\\]
                                                                 }
                                                                 else if (text.equals(QaDesignBundle.message("keywords.qa_design.testcase.expect"))){
                                                                     return QaDesignTypes.TEST_CASE_EXPECT_KEY;
-                                                                } else {
+                                                                }
+                                                                //else if (text.equals("@@"+QaDesignBundle.message("keywords.qa_design.link"))){
+                                                                   // return QaDesignTypes.LINKED_METHOD_KEY;
+                                                                //}
+                                                                else {
                                                                     return QaDesignTypes.INSIDE;
                                                                 }
                                                             }
-//{SUB_REQUIRMENT_KEY}                            { return QaDesignTypes.SUB_REQUIRMENT_KEY; }
-//<YYINITIAL> {TEST_POINT_KEY}                                { yybegin(YYINITIAL); return QaDesignTypes.TEST_POINT_KEY; }
-//<YYINITIAL> {TEST_CASE_KEY}                                 { yybegin(YYINITIAL); return QaDesignTypes.TEST_CASE_KEY; }
-//<YYINITIAL> {TEST_CASE_NAME_KEY}                            { yybegin(YYINITIAL); return QaDesignTypes.TEST_CASE_NAME_KEY; }
-//<YYINITIAL> {TEST_CASE_DESC_KEY}                            { yybegin(YYINITIAL); return QaDesignTypes.TEST_CASE_DESC_KEY; }
-//<YYINITIAL> {TEST_CASE_DATA_KEY}                            { yybegin(YYINITIAL); return QaDesignTypes.TEST_CASE_DATA_KEY; }
-//<YYINITIAL> {TEST_CASE_STEP_KEY}                            { yybegin(YYINITIAL); return QaDesignTypes.TEST_CASE_STEP_KEY; }
-//<YYINITIAL> {TEST_CASE_EXPECT_KEY}                          { yybegin(YYINITIAL); return QaDesignTypes.TEST_CASE_EXPECT_KEY; }
 <YYINITIAL> {SEPARATOR}                                     { yybegin(WAITING_VALUE); return QaDesignTypes.SEPARATOR; }
 <YYINITIAL> {CONCAT_NEW_LINE}                               { yybegin(WAITING_VALUE); return QaDesignTypes.CONCAT_NEW_LINE; }
 <WAITING_VALUE> {CONCAT_NEW_LINE}                           { yybegin(WAITING_VALUE); return QaDesignTypes.CONCAT_NEW_LINE; }
-//<WAITING_VALUE> {CRLF}({CRLF}|{WHITE_SPACE})+               { yybegin(YYINITIAL); return TokenType.WHITE_SPACE; }
 <WAITING_VALUE> {WHITE_SPACE}+                              { yybegin(WAITING_VALUE); return TokenType.WHITE_SPACE; }
-<WAITING_VALUE> {FIRST_VALUE_CHARACTER}{VALUE_CHARACTER}*                          { yybegin(YYINITIAL); return QaDesignTypes.CONTENT; }
+<WAITING_VALUE> {FIRST_VALUE_CHARACTER}{VALUE_CHARACTER}*   { yybegin(YYINITIAL); return QaDesignTypes.CONTENT; }
+
 ({CRLF}|{WHITE_SPACE})+                                     { yybegin(YYINITIAL); return TokenType.WHITE_SPACE; }
+
+
+<WAITING_LINKED_METHOD> {
+    \"{WHITE_SPACE}*\)                  { yybegin(YYINITIAL); return QaDesignTypes.RIGHT_BOUNDARY; }
+    [^ \"\n\r\f\t\(\)]+                       { return QaDesignTypes.LINKED_METHOD_VALUE; }
+    {WHITE_SPACE}+                         { return TokenType.BAD_CHARACTER; }
+}
 [^]                                                         { return TokenType.BAD_CHARACTER; }

@@ -24,12 +24,16 @@ public class QaDesignSyntaxHighlighter extends SyntaxHighlighterBase {
     public static final TextAttributesKey BAD_CHARACTER =
             createTextAttributesKey("QA_DESIGN_BAD_CHARACTER", HighlighterColors.BAD_CHARACTER);
 
+    public static final TextAttributesKey ANNOTATION =
+            createTextAttributesKey("QA_DESIGN_ANNOTATION", DefaultLanguageHighlighterColors.METADATA);
+
 
     private static final TextAttributesKey[] BAD_CHAR_KEYS = new TextAttributesKey[]{BAD_CHARACTER};
     private static final TextAttributesKey[] SEPARATOR_KEYS = new TextAttributesKey[]{SEPARATOR};
     private static final TextAttributesKey[] KEY_KEYS = new TextAttributesKey[]{KEY};
     private static final TextAttributesKey[] CONTENT_KEYS = new TextAttributesKey[]{CONTENT};
     private static final TextAttributesKey[] COMMENT_KEYS = new TextAttributesKey[]{COMMENT};
+    private static final TextAttributesKey[] ANNOTATION_KEYS = new TextAttributesKey[]{ANNOTATION};
     private static final TextAttributesKey[] EMPTY_KEYS = new TextAttributesKey[0];
 
     @NotNull
@@ -61,6 +65,9 @@ public class QaDesignSyntaxHighlighter extends SyntaxHighlighterBase {
         }
         if (tokenType.equals(TokenType.BAD_CHARACTER)) {
             return BAD_CHAR_KEYS;
+        }
+        if (tokenType.equals(QaDesignTypes.RULE_LINKED_METHOD)) {
+            return ANNOTATION_KEYS;
         }
         return EMPTY_KEYS;
     }

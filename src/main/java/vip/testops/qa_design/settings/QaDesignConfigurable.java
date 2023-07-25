@@ -43,7 +43,7 @@ public class QaDesignConfigurable implements SearchableConfigurable {
         if(mainPanel == null){
             mainPanel = new JPanel(new BorderLayout());
 
-            enableAICheckBox = new JCheckBox("Enable AI", settings.isEnableAI());
+            enableAICheckBox = new JCheckBox("OpenAI APIKEY:", settings.isEnableAI());
             enableAICheckBox.addChangeListener(e -> {
                 openaiKeyTextField.setEnabled(enableAICheckBox.isSelected());
 

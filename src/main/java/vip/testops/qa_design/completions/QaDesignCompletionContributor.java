@@ -7,6 +7,7 @@ import com.intellij.psi.PsiElement;
 import com.intellij.util.ProcessingContext;
 import org.jetbrains.annotations.NotNull;
 import vip.testops.qa_design.QaDesignBundle;
+import vip.testops.qa_design.lang.psi.QaDesignTypes;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -14,7 +15,7 @@ import java.util.Map;
 public class QaDesignCompletionContributor extends CompletionContributor {
 
     public QaDesignCompletionContributor() {
-        extend(CompletionType.BASIC, PlatformPatterns.psiElement(),
+        extend(CompletionType.BASIC, PlatformPatterns.psiElement(QaDesignTypes.INSIDE),
                 new CompletionProvider<>() {
                     @Override
                     protected void addCompletions(
@@ -49,6 +50,9 @@ public class QaDesignCompletionContributor extends CompletionContributor {
                             }
                             if (msg.contains("QaDesignTokenType.TEST_CASE_EXPECT_KEY")) {
                                 result.addElement(LookupElementBuilder.create(QaDesignBundle.message("keywords.qa_design.testcase.expect")));
+                            }
+                            if (msg.contains("QaDesignTokenType.LINKED_METHOD_KEY")) {
+                                result.addElement(LookupElementBuilder.create(QaDesignBundle.message("keywords.qa_design.link")));
                             }
                         }
                     }

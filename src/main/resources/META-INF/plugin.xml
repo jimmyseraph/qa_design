@@ -31,10 +31,24 @@
     <p>You can enable AI chat window by setting OpenAI API-Key in "Settings -> Languages and Frameworks -> QA Design Settings"</p>
   ]]></description>
 
+
+    <change-notes><![CDATA[
+        <h2>New Features</h2>
+        <ul>
+            <li>A testcase can link to a JAVA test method(TestNG) by using "@@link("xx.xx.xx.xx")"</li>
+            <li>If a testcase has linked to a TestNG method, it can run/debug from gutter.</li>
+        </ul>
+        <h2>Bug Fixes</h2>
+        <ul>
+            <li>Optimize QA Design PSI leaf elements</li>
+        </ul>
+    ]]></change-notes>
+
     <!-- Product and plugin compatibility requirements.
          Read more: https://plugins.jetbrains.com/docs/intellij/plugin-compatibility.html -->
     <depends>com.intellij.modules.platform</depends>
     <depends>org.intellij.plugins.markdown</depends>
+    <depends>TestNG-J</depends>
 
     <resource-bundle>messages.qadesign</resource-bundle>
 
@@ -82,6 +96,10 @@
         />
         <colorSettingsPage
                 implementation="vip.testops.qa_design.lang.QaDesignColorSettingsPage"
+        />
+        <psi.referenceContributor
+                language="QaDesign"
+                implementation="vip.testops.qa_design.lang.QaDesignReferenceContributor"
         />
         <completion.contributor
                 language="QaDesign"
@@ -137,21 +155,48 @@
                 serviceInterface="vip.testops.qa_design.services.QaDesignChatService"
                 serviceImplementation="vip.testops.qa_design.services.impl.QaDesignChatServiceImpl"
         />
-        <notificationGroup id="QaDesign Notification Group"
-                           displayType="BALLOON"
-                           key="notification.qa_design.group"
+        <notificationGroup
+                id="QaDesign Notification Group"
+                displayType="BALLOON"
+                key="notification.qa_design.group"
+        />
+
+        <lang.elementManipulator
+                forClass="vip.testops.qa_design.lang.psi.LinkedMethodValueElement"
+                implementationClass="vip.testops.qa_design.lang.psi.LinkedMethodValueElement$Manipulator"
+        />
+        <lang.ast.factory
+                language="QaDesign"
+                implementationClass="vip.testops.qa_design.lang.QaDesignASTFactory"
+        />
+        <runLineMarkerContributor
+                language="QaDesign"
+                implementationClass="vip.testops.qa_design.run.QaDesignRunLineMarkerContributor"
+        />
+        <programRunner
+                implementation="vip.testops.qa_design.run.QaDesignDebugRunner"
+        />
+        <configurationType
+                implementation="vip.testops.qa_design.run.configuration.QaDesignDebugConfigurationType"
+        />
+        <runConfigurationProducer
+                implementation="vip.testops.qa_design.run.configuration.QaDesignRunConfigurationProducer"
         />
     </extensions>
     <actions>
-        <action id="vip.testops.qa_design.actions.ExportAction" class="vip.testops.qa_design.actions.ExportAction"
-                text="Export to Excel" description="Export to excel">
-            <add-to-group group-id="ProjectViewPopupMenu" anchor="last"/>
-            <keyboard-shortcut keymap="$default" first-keystroke="meta alt e"/>
-        </action>
-        <action id="vip.testops.qa_design.actions.ImportAction" class="vip.testops.qa_design.actions.ImportAction"
-                text="Import from Excel" description="Import from excel to QA Design">
-            <add-to-group group-id="ProjectViewPopupMenu" anchor="last"/>
-            <keyboard-shortcut keymap="$default" first-keystroke="meta alt i"/>
-        </action>
+        <group id="vip.testops.qa_design.actions"
+               text="QA Designer"
+               popup="true">
+            <add-to-group group-id="ProjectViewPopupMenu" anchor="last" />
+            <action id="vip.testops.qa_design.actions.ExportAction" class="vip.testops.qa_design.actions.ExportAction"
+                    text="Export to Excel" description="Export to excel">
+                <keyboard-shortcut keymap="$default" first-keystroke="meta alt e"/>
+            </action>
+            <action id="vip.testops.qa_design.actions.ImportAction" class="vip.testops.qa_design.actions.ImportAction"
+                    text="Import from Excel" description="Import from excel to QA Design">
+                <keyboard-shortcut keymap="$default" first-keystroke="meta alt i"/>
+            </action>
+        </group>
+
     </actions>
 </idea-plugin>

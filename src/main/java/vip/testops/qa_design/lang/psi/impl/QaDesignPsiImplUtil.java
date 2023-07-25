@@ -3,7 +3,9 @@ package vip.testops.qa_design.lang.psi.impl;
 import com.intellij.lang.ASTNode;
 import com.intellij.navigation.ItemPresentation;
 import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiFile;
+import com.intellij.psi.PsiNamedElement;
+import com.intellij.psi.PsiReference;
+import com.intellij.psi.PsiReferenceService;
 import org.jetbrains.annotations.Nullable;
 import vip.testops.qa_design.QaDesignBundle;
 import vip.testops.qa_design.lang.psi.*;
@@ -11,6 +13,15 @@ import vip.testops.qa_design.lang.psi.*;
 import javax.swing.*;
 
 public class QaDesignPsiImplUtil {
+
+    public static String getValue(QaDesignRuleLinkedMethod element) {
+        ASTNode valueNode = element.getNode().findChildByType(QaDesignTypes.LINKED_METHOD_VALUE);
+        if (valueNode != null) {
+            return valueNode.getText();
+        } else {
+            return null;
+        }
+    }
 
     public static String getValue(QaDesignRuleFirstLine element) {
         ASTNode valueNode = element.getNode().findChildByType(QaDesignTypes.CONTENT);
@@ -112,6 +123,10 @@ public class QaDesignPsiImplUtil {
         return sb.toString();
     }
 
+    public static String getName(QaDesignRuleLinkedMethod element) {
+        return QaDesignBundle.message("keywords.qa_design.link");
+    }
+
     public static String getName(QaDesignRuleFirstLine element) {
         return QaDesignBundle.message("keywords.qa_design.requirement");
     }
@@ -140,6 +155,10 @@ public class QaDesignPsiImplUtil {
         return QaDesignBundle.message("keywords.qa_design.testcase.expect");
     }
 
+    public static PsiElement setName(QaDesignRuleLinkedMethod element, String newName) {
+        return element;
+    }
+
     public static PsiElement setName(QaDesignRuleFirstLine element, String newName) {
         return element;
     }
@@ -165,6 +184,12 @@ public class QaDesignPsiImplUtil {
     }
 
     public static PsiElement setName(QaDesignRuleTestCaseExpect element, String newName) {
+        return element;
+    }
+
+    public static PsiElement getNameIdentifier(QaDesignRuleLinkedMethod element) {
+//        ASTNode keyNode = element.getNode().findChildByType(QaDesignTypes.LINKED_METHOD_KEY);
+//        return keyNode != null ? keyNode.getPsi() : null;
         return element;
     }
 

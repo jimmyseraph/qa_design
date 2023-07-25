@@ -10,6 +10,7 @@ public interface QaDesignTypes {
 
   IElementType FAKE_RULE = new QaDesignElementType("FAKE_RULE");
   IElementType RULE_FIRST_LINE = new QaDesignElementType("RULE_FIRST_LINE");
+  IElementType RULE_LINKED_METHOD = new QaDesignElementType("RULE_LINKED_METHOD");
   IElementType RULE_TEST_CASE_DATA = new QaDesignElementType("RULE_TEST_CASE_DATA");
   IElementType RULE_TEST_CASE_DESC = new QaDesignElementType("RULE_TEST_CASE_DESC");
   IElementType RULE_TEST_CASE_DESIGN = new QaDesignElementType("RULE_TEST_CASE_DESIGN");
@@ -22,7 +23,10 @@ public interface QaDesignTypes {
   IElementType CONTENT = new QaDesignTokenType("CONTENT");
   IElementType CRLF = new QaDesignTokenType("CRLF");
   IElementType INSIDE = new QaDesignTokenType("INSIDE");
+  IElementType LEFT_BOUNDARY = new QaDesignTokenType("LEFT_BOUNDARY");
+  IElementType LINKED_METHOD_VALUE = new QaDesignTokenType("LINKED_METHOD_VALUE");
   IElementType REQUIREMENT_KEY = new QaDesignTokenType("REQUIREMENT_KEY");
+  IElementType RIGHT_BOUNDARY = new QaDesignTokenType("RIGHT_BOUNDARY");
   IElementType SEPARATOR = new QaDesignTokenType("SEPARATOR");
   IElementType TEST_CASE_DATA_KEY = new QaDesignTokenType("TEST_CASE_DATA_KEY");
   IElementType TEST_CASE_DESC_KEY = new QaDesignTokenType("TEST_CASE_DESC_KEY");
@@ -39,6 +43,9 @@ public interface QaDesignTypes {
       }
       else if (type == RULE_FIRST_LINE) {
         return new QaDesignRuleFirstLineImpl(node);
+      }
+      else if (type == RULE_LINKED_METHOD) {
+        return new QaDesignRuleLinkedMethodImpl(node);
       }
       else if (type == RULE_TEST_CASE_DATA) {
         return new QaDesignRuleTestCaseDataImpl(node);

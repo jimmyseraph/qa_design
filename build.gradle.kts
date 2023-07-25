@@ -1,10 +1,10 @@
 plugins {
     id("java")
-    id("org.jetbrains.intellij") version "1.13.3"
+    id("org.jetbrains.intellij") version "1.14.2"
 }
 
 group = "vip.testops"
-version = "1.0-SNAPSHOT"
+version = "1.0.0"
 
 repositories {
     mavenCentral()
@@ -23,7 +23,11 @@ intellij {
     version.set("2022.3")
     type.set("IC") // Target IDE Platform
 
-    plugins.set(listOf("org.intellij.plugins.markdown"))
+    plugins.set(listOf(
+            "TestNG-J",
+            "org.intellij.plugins.markdown",
+            "com.intellij.java",
+    ))
 }
 
 sourceSets {
@@ -42,7 +46,7 @@ tasks {
     }
 
     patchPluginXml {
-        sinceBuild.set("223.0")
+        sinceBuild.set("223")
         untilBuild.set("231.*")
     }
 

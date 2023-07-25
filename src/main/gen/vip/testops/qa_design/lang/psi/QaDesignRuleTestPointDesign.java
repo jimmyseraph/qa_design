@@ -9,6 +9,9 @@ import com.intellij.navigation.ItemPresentation;
 public interface QaDesignRuleTestPointDesign extends QaDesignNamedElement {
 
   @NotNull
+  List<QaDesignRuleLinkedMethod> getRuleLinkedMethodList();
+
+  @NotNull
   List<QaDesignRuleTestCaseDesign> getRuleTestCaseDesignList();
 
   String getName();

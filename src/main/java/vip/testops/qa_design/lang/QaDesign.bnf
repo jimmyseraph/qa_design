@@ -22,7 +22,7 @@ rule_first_line ::= REQUIREMENT_KEY SEPARATOR CONTENT (CONCAT_NEW_LINE CONTENT)*
     implements="vip.testops.qa_design.lang.psi.QaDesignNamedElement"
     methods=[getName setName getValue getContent getNameIdentifier getPresentation]
 }
-rule_test_point_design ::= TEST_POINT_KEY SEPARATOR CONTENT (CONCAT_NEW_LINE CONTENT)* (rule_test_case_design)* {
+rule_test_point_design ::= TEST_POINT_KEY SEPARATOR CONTENT (CONCAT_NEW_LINE CONTENT)* (rule_linked_method? rule_test_case_design)* {
     mixin="vip.testops.qa_design.lang.psi.impl.QaDesignNamedElementImpl"
     implements="vip.testops.qa_design.lang.psi.QaDesignNamedElement"
     methods=[getName setName getValue getContent getNameIdentifier getPresentation]
@@ -51,4 +51,10 @@ rule_test_case_expect ::= TEST_CASE_EXPECT_KEY SEPARATOR CONTENT (CONCAT_NEW_LIN
     mixin="vip.testops.qa_design.lang.psi.impl.QaDesignNamedElementImpl"
     implements="vip.testops.qa_design.lang.psi.QaDesignNamedElement"
     methods=[getName setName getValue getContent getNameIdentifier getPresentation]
+}
+
+rule_linked_method ::= LEFT_BOUNDARY LINKED_METHOD_VALUE RIGHT_BOUNDARY {
+    mixin="vip.testops.qa_design.lang.psi.impl.QaDesignNamedElementImpl"
+    implements="vip.testops.qa_design.lang.psi.QaDesignNamedElement"
+    methods=[getName setName getValue getNameIdentifier]
 }

@@ -127,6 +127,18 @@ public class QaDesignParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
+  // LEFT_BOUNDARY LINKED_METHOD_VALUE RIGHT_BOUNDARY
+  public static boolean rule_linked_method(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "rule_linked_method")) return false;
+    if (!nextTokenIs(b, LEFT_BOUNDARY)) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = consumeTokens(b, 0, LEFT_BOUNDARY, LINKED_METHOD_VALUE, RIGHT_BOUNDARY);
+    exit_section_(b, m, RULE_LINKED_METHOD, r);
+    return r;
+  }
+
+  /* ********************************************************** */
   // TEST_CASE_DATA_KEY SEPARATOR (CONCAT_NEW_LINE? CONTENT)*
   public static boolean rule_test_case_data(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "rule_test_case_data")) return false;
@@ -316,7 +328,7 @@ public class QaDesignParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // TEST_POINT_KEY SEPARATOR CONTENT (CONCAT_NEW_LINE CONTENT)* (rule_test_case_design)*
+  // TEST_POINT_KEY SEPARATOR CONTENT (CONCAT_NEW_LINE CONTENT)* (rule_linked_method? rule_test_case_design)*
   public static boolean rule_test_point_design(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "rule_test_point_design")) return false;
     if (!nextTokenIs(b, TEST_POINT_KEY)) return false;
@@ -350,7 +362,7 @@ public class QaDesignParser implements PsiParser, LightPsiParser {
     return r;
   }
 
-  // (rule_test_case_design)*
+  // (rule_linked_method? rule_test_case_design)*
   private static boolean rule_test_point_design_4(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "rule_test_point_design_4")) return false;
     while (true) {
@@ -361,14 +373,22 @@ public class QaDesignParser implements PsiParser, LightPsiParser {
     return true;
   }
 
-  // (rule_test_case_design)
+  // rule_linked_method? rule_test_case_design
   private static boolean rule_test_point_design_4_0(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "rule_test_point_design_4_0")) return false;
     boolean r;
     Marker m = enter_section_(b);
-    r = rule_test_case_design(b, l + 1);
+    r = rule_test_point_design_4_0_0(b, l + 1);
+    r = r && rule_test_case_design(b, l + 1);
     exit_section_(b, m, null, r);
     return r;
+  }
+
+  // rule_linked_method?
+  private static boolean rule_test_point_design_4_0_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "rule_test_point_design_4_0_0")) return false;
+    rule_linked_method(b, l + 1);
+    return true;
   }
 
 }

@@ -15,6 +15,7 @@ import vip.testops.qa_design.QaDesignLanguage;
 import vip.testops.qa_design.lang.parser.QaDesignParser;
 import vip.testops.qa_design.lang.psi.QaDesignFile;
 import vip.testops.qa_design.lang.psi.QaDesignTokenSets;
+import vip.testops.qa_design.lang.psi.QaDesignTokenType;
 import vip.testops.qa_design.lang.psi.QaDesignTypes;
 
 public class QaDesignParserDefinition implements ParserDefinition {
@@ -35,7 +36,7 @@ public class QaDesignParserDefinition implements ParserDefinition {
     @NotNull
     @Override
     public TokenSet getStringLiteralElements() {
-        return TokenSet.EMPTY;
+        return QaDesignTokenSets.LINKED_METHOD_VALUES;
     }
 
     @NotNull

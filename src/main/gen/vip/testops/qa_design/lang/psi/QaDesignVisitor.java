@@ -15,6 +15,10 @@ public class QaDesignVisitor extends PsiElementVisitor {
     visitNamedElement(o);
   }
 
+  public void visitRuleLinkedMethod(@NotNull QaDesignRuleLinkedMethod o) {
+    visitNamedElement(o);
+  }
+
   public void visitRuleTestCaseData(@NotNull QaDesignRuleTestCaseData o) {
     visitNamedElement(o);
   }

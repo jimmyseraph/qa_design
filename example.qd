@@ -2,6 +2,7 @@ Requirement: User can change password by entering personal settings page. \
            New password must not the same as the previous one, and the length must between 6 and 18 characters.
 
 TestPoint: change password with different value
+    @@link("vip.testops.qa_design.QaDesignFileType@getName")
     TestCase: Change Password with valid data
         TestCaseDesc: Verify if user can change their password with valid data successfully
         TestCaseData: - old password: "testpass1" \

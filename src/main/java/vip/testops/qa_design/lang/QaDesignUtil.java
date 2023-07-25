@@ -1,11 +1,16 @@
 package vip.testops.qa_design.lang;
 
+import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
+import com.intellij.psi.PsiDocumentManager;
+import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiManager;
 import com.intellij.psi.search.FileTypeIndex;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.util.PsiTreeUtil;
+import org.jetbrains.annotations.NotNull;
 import vip.testops.qa_design.QaDesignFileType;
 import vip.testops.qa_design.lang.psi.QaDesignFile;
 import vip.testops.qa_design.lang.psi.QaDesignRuleFirstLine;
@@ -48,19 +53,15 @@ public class QaDesignUtil {
         return result;
     }
 
-    /**
-     * Attempts to collect any comment elements above the Simple key/value pair.
-     */
-//    public static @NotNull String findDocumentationComment(SimpleProperty property) {
-//        List<String> result = new LinkedList<>();
-//        PsiElement element = property.getPrevSibling();
-//        while (element instanceof PsiComment || element instanceof PsiWhiteSpace) {
-//            if (element instanceof PsiComment) {
-//                String commentText = element.getText().replaceFirst("[!# ]+", "");
-//                result.add(commentText);
-//            }
-//            element = element.getPrevSibling();
-//        }
-//        return StringUtil.join(Lists.reverse(result),"\n ");
-//    }
+    public static Integer getLineNumber(@NotNull PsiElement element) {
+        PsiFile containingFile = element.getContainingFile();
+        Project project = containingFile.getProject();
+        PsiDocumentManager psiDocumentManager = PsiDocumentManager.getInstance(project);
+        Document document = psiDocumentManager.getDocument(containingFile);
+        int textOffset = element.getTextOffset();
+        if (document == null) {
+            return null;
+        }
+        return document.getLineNumber(textOffset) + 1;
+    }
 }

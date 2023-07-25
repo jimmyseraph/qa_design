@@ -8,7 +8,6 @@ import com.intellij.psi.tree.IElementType;
 import vip.testops.qa_design.QaDesignBundle;import vip.testops.qa_design.lang.psi.QaDesignTypes;
 import com.intellij.psi.TokenType;
 
-
 class QaDesignLexer implements FlexLexer {
 
   /** This character denotes the end of file */
@@ -20,6 +19,7 @@ class QaDesignLexer implements FlexLexer {
   /** lexical states */
   public static final int YYINITIAL = 0;
   public static final int WAITING_VALUE = 2;
+  public static final int WAITING_LINKED_METHOD = 4;
 
   /**
    * ZZ_LEXSTATE[l] is the state in the DFA for the lexical state l
@@ -28,7 +28,7 @@ class QaDesignLexer implements FlexLexer {
    * l is of the form l = 2*k, k a non negative integer
    */
   private static final int ZZ_LEXSTATE[] = {
-     0,  0,  1, 1
+     0,  0,  1,  1,  2, 2
   };
 
   /**
@@ -66,7 +66,9 @@ class QaDesignLexer implements FlexLexer {
 
   private static final String ZZ_CMAP_BLOCKS_PACKED_0 =
     "\11\0\1\1\1\2\1\0\1\3\1\4\22\0\1\5"+
-    "\2\0\1\6\26\0\1\7\41\0\1\10\u01a3\0";
+    "\1\0\1\6\1\7\4\0\1\10\1\11\20\0\1\12"+
+    "\5\0\1\13\33\0\1\14\14\0\1\15\1\0\1\16"+
+    "\1\17\1\0\1\20\u0191\0";
 
   private static int [] zzUnpackcmap_blocks() {
     int [] result = new int[512];
@@ -93,11 +95,12 @@ class QaDesignLexer implements FlexLexer {
   private static final int [] ZZ_ACTION = zzUnpackAction();
 
   private static final String ZZ_ACTION_PACKED_0 =
-    "\2\0\1\1\1\2\1\1\1\3\1\4\1\5\1\6"+
-    "\2\7\1\5\1\3";
+    "\3\0\1\1\1\2\1\1\1\3\1\4\1\5\1\1"+
+    "\1\6\1\7\2\10\1\6\1\11\1\3\1\4\1\1"+
+    "\1\0\1\12\4\1\1\0\1\13";
 
   private static int [] zzUnpackAction() {
-    int [] result = new int[13];
+    int [] result = new int[27];
     int offset = 0;
     offset = zzUnpackAction(ZZ_ACTION_PACKED_0, offset, result);
     return result;
@@ -122,11 +125,13 @@ class QaDesignLexer implements FlexLexer {
   private static final int [] ZZ_ROWMAP = zzUnpackRowMap();
 
   private static final String ZZ_ROWMAP_PACKED_0 =
-    "\0\0\0\11\0\22\0\33\0\44\0\55\0\66\0\66"+
-    "\0\77\0\110\0\121\0\77\0\132";
+    "\0\0\0\21\0\42\0\63\0\104\0\125\0\146\0\167"+
+    "\0\146\0\210\0\146\0\231\0\252\0\273\0\231\0\314"+
+    "\0\335\0\356\0\377\0\335\0\146\0\u0110\0\u0121\0\u0132"+
+    "\0\u0143\0\u0154\0\146";
 
   private static int [] zzUnpackRowMap() {
-    int [] result = new int[13];
+    int [] result = new int[27];
     int offset = 0;
     offset = zzUnpackRowMap(ZZ_ROWMAP_PACKED_0, offset, result);
     return result;
@@ -149,16 +154,28 @@ class QaDesignLexer implements FlexLexer {
   private static final int [] ZZ_TRANS = zzUnpacktrans();
 
   private static final String ZZ_TRANS_PACKED_0 =
-    "\1\3\3\4\1\5\1\4\1\6\1\7\1\10\1\11"+
-    "\1\12\4\13\2\11\1\14\1\3\3\0\1\3\1\0"+
-    "\1\3\3\0\5\4\3\0\1\3\3\4\1\5\1\4"+
-    "\1\3\2\0\1\6\1\15\1\0\1\15\1\3\1\15"+
-    "\1\6\2\15\11\0\2\11\2\0\4\11\1\0\1\11"+
-    "\1\12\2\13\2\12\2\11\2\0\5\13\3\0\2\15"+
-    "\1\0\1\15\1\0\4\15";
+    "\1\4\3\5\1\6\1\5\1\7\1\10\2\7\1\11"+
+    "\1\12\1\13\4\4\1\14\1\15\4\16\6\14\1\17"+
+    "\4\14\1\20\5\5\1\21\1\20\2\7\7\20\1\4"+
+    "\3\0\1\4\2\0\1\4\3\0\1\4\1\0\4\4"+
+    "\1\0\5\5\13\0\1\4\3\5\1\6\1\5\1\0"+
+    "\1\4\3\0\1\4\1\0\4\4\21\0\1\10\1\22"+
+    "\1\0\1\22\1\4\2\22\1\10\3\22\1\10\1\22"+
+    "\4\10\1\4\3\0\1\4\2\0\1\4\3\0\1\23"+
+    "\1\0\4\4\2\14\2\0\10\14\1\0\5\14\1\15"+
+    "\2\16\2\15\6\14\1\0\4\14\1\0\5\16\13\0"+
+    "\1\20\6\0\1\20\2\0\7\20\1\0\5\24\3\0"+
+    "\1\25\7\0\2\22\1\0\1\22\1\0\14\22\1\4"+
+    "\3\0\1\4\2\0\1\4\3\0\1\4\1\0\2\4"+
+    "\1\26\2\4\3\0\1\4\2\0\1\4\3\0\1\4"+
+    "\1\0\1\27\4\4\3\0\1\4\2\0\1\4\3\0"+
+    "\1\4\1\0\3\4\1\30\1\4\3\0\1\4\2\0"+
+    "\1\4\3\0\1\4\1\0\1\4\1\31\3\4\3\0"+
+    "\1\4\2\0\1\4\1\32\2\0\1\4\1\0\4\4"+
+    "\1\0\5\32\1\33\12\0";
 
   private static int [] zzUnpacktrans() {
-    int [] result = new int[99];
+    int [] result = new int[357];
     int offset = 0;
     offset = zzUnpacktrans(ZZ_TRANS_PACKED_0, offset, result);
     return result;
@@ -196,10 +213,11 @@ class QaDesignLexer implements FlexLexer {
   private static final int [] ZZ_ATTRIBUTE = zzUnpackAttribute();
 
   private static final String ZZ_ATTRIBUTE_PACKED_0 =
-    "\2\0\4\1\2\11\5\1";
+    "\3\0\3\1\1\11\1\1\1\11\1\1\1\11\10\1"+
+    "\1\0\1\11\4\1\1\0\1\11";
 
   private static int [] zzUnpackAttribute() {
-    int [] result = new int[13];
+    int [] result = new int[27];
     int offset = 0;
     offset = zzUnpackAttribute(ZZ_ATTRIBUTE_PACKED_0, offset, result);
     return result;
@@ -543,42 +561,66 @@ class QaDesignLexer implements FlexLexer {
                                                                 }
                                                                 else if (text.equals(QaDesignBundle.message("keywords.qa_design.testcase.expect"))){
                                                                     return QaDesignTypes.TEST_CASE_EXPECT_KEY;
-                                                                } else {
+                                                                }
+                                                                //else if (text.equals("@@"+QaDesignBundle.message("keywords.qa_design.link"))){
+                                                                   // return QaDesignTypes.LINKED_METHOD_KEY;
+                                                                //}
+                                                                else {
                                                                     return QaDesignTypes.INSIDE;
                                                                 }
             }
           // fall through
-          case 8: break;
+          case 12: break;
           case 2:
             { yybegin(YYINITIAL); return TokenType.WHITE_SPACE;
             }
           // fall through
-          case 9: break;
-          case 3:
-            { yybegin(YYINITIAL); return QaDesignTypes.COMMENT;
-            }
-          // fall through
-          case 10: break;
-          case 4:
-            { yybegin(WAITING_VALUE); return QaDesignTypes.SEPARATOR;
-            }
-          // fall through
-          case 11: break;
-          case 5:
-            { yybegin(WAITING_VALUE); return QaDesignTypes.CONCAT_NEW_LINE;
-            }
-          // fall through
-          case 12: break;
-          case 6:
-            { yybegin(YYINITIAL); return QaDesignTypes.CONTENT;
-            }
-          // fall through
           case 13: break;
-          case 7:
-            { yybegin(WAITING_VALUE); return TokenType.WHITE_SPACE;
+          case 3:
+            { return TokenType.BAD_CHARACTER;
             }
           // fall through
           case 14: break;
+          case 4:
+            { yybegin(YYINITIAL); return QaDesignTypes.COMMENT;
+            }
+          // fall through
+          case 15: break;
+          case 5:
+            { yybegin(WAITING_VALUE); return QaDesignTypes.SEPARATOR;
+            }
+          // fall through
+          case 16: break;
+          case 6:
+            { yybegin(WAITING_VALUE); return QaDesignTypes.CONCAT_NEW_LINE;
+            }
+          // fall through
+          case 17: break;
+          case 7:
+            { yybegin(YYINITIAL); return QaDesignTypes.CONTENT;
+            }
+          // fall through
+          case 18: break;
+          case 8:
+            { yybegin(WAITING_VALUE); return TokenType.WHITE_SPACE;
+            }
+          // fall through
+          case 19: break;
+          case 9:
+            { return QaDesignTypes.LINKED_METHOD_VALUE;
+            }
+          // fall through
+          case 20: break;
+          case 10:
+            { yybegin(YYINITIAL); return QaDesignTypes.RIGHT_BOUNDARY;
+            }
+          // fall through
+          case 21: break;
+          case 11:
+            { yybegin(WAITING_LINKED_METHOD); return QaDesignTypes.LEFT_BOUNDARY;
+            }
+          // fall through
+          case 22: break;
           default:
             zzScanError(ZZ_NO_MATCH);
           }

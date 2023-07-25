@@ -29,7 +29,9 @@ public class QaDesignBlock extends AbstractBlock {
             if (child.getElementType() != TokenType.WHITE_SPACE) {
                 Alignment alignment = Alignment.createAlignment();
                 int level = 0;
-                if (child.getElementType() == QaDesignTypes.RULE_TEST_CASE_DESIGN) {
+                if (child.getElementType() == QaDesignTypes.RULE_TEST_CASE_DESIGN ||
+                        child.getElementType() == QaDesignTypes.RULE_LINKED_METHOD
+                ) {
                     level = 1;
                 } else if (
                         child.getElementType() == QaDesignTypes.RULE_TEST_CASE_DESC ||
