@@ -46,8 +46,24 @@ public class QaDesignRunLineMarkerContributor extends RunLineMarkerContributor {
 //        if (type == QaDesignTypes.REQUIREMENT_KEY && !isContainLinkedMethod(element)) {
 //            return null;
 //        }
-        TestStateStorage.Record state = getTestStateStorage(element);
+        PsiElement linkElement = ReferenceUtil.getLink(element);
+        if(linkElement == null) return null;
+        String url = getUrl(linkElement.getText());
+
+        PsiElement refElement = ReferenceUtil.getReference(linkElement);
+        TestStateStorage.Record state = TestStateStorage.getInstance(refElement.getProject()).getState(url);
         return getInfo(state, type != QaDesignTypes.TEST_CASE_NAME_KEY);
+    }
+
+    private static String getUrl(String content) {
+        String prefix = "java:test://";
+        int index = content.lastIndexOf('.');
+        if (index == -1) {
+            return prefix + content;
+        }
+        String firstPart = content.substring(0, index);
+        String secondPart = content.substring(index + 1);
+        return prefix + firstPart + "/" + secondPart;
     }
 
     @Override
