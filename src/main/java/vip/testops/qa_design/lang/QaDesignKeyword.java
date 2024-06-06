@@ -4,14 +4,15 @@ import vip.testops.qa_design.QaDesignBundle;
 
 public enum QaDesignKeyword {
 
-    REQUIREMENT_ID(0,QaDesignBundle.message("keywords.qa_design.requirement.id")),
-    REQUIREMENT(1, QaDesignBundle.message("keywords.qa_design.requirement")),
-    TEST_POINT(2,QaDesignBundle.message("keywords.qa_design.test_point")),
-    TEST_CASE(3,QaDesignBundle.message("keywords.qa_design.testcase")),
-    TEST_CASE_DESC(4,QaDesignBundle.message("keywords.qa_design.testcase.desc")),
-    TEST_CASE_DATA(5,QaDesignBundle.message("keywords.qa_design.testcase.data")),
-    TEST_CASE_STEP(6,QaDesignBundle.message("keywords.qa_design.testcase.step")),
-    TEST_CASE_EXPECT(7,QaDesignBundle.message("keywords.qa_design.testcase.expect")),
+    FEATURE(0,QaDesignBundle.message("keywords.qa_design.feature")),
+    TEST_POINT(1,QaDesignBundle.message("keywords.qa_design.test_point")),
+    TEST_CASE(2,QaDesignBundle.message("keywords.qa_design.testcase")),
+    TEST_CASE_DESC(3,QaDesignBundle.message("keywords.qa_design.testcase.desc")),
+    TEST_CASE_DATA(4,QaDesignBundle.message("keywords.qa_design.testcase.data")),
+    TEST_CASE_STEP(5,QaDesignBundle.message("keywords.qa_design.testcase.step")),
+    TEST_CASE_EXPECT(6,QaDesignBundle.message("keywords.qa_design.testcase.expect")),
+    TEST_CASE_LINK(7, QaDesignBundle.message("keywords.qa_design.link")),
+    TEST_CASE_TAG(8, QaDesignBundle.message("keywords.qa_design.tag")),
     ;
     private final String name;
     private final int index;

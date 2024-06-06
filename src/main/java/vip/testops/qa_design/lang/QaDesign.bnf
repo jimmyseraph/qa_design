@@ -17,17 +17,18 @@
 
 qaDesignFile ::= (COMMENT|rule_first_line (rule_test_point_design)*|CRLF)
 fake_rule::= INSIDE
-rule_first_line ::= REQUIREMENT_KEY SEPARATOR CONTENT (CONCAT_NEW_LINE CONTENT)* {
+rule_first_line ::= FEATURE SEPARATOR CONTENT (CONCAT_NEW_LINE CONTENT)* {
     mixin="vip.testops.qa_design.lang.psi.impl.QaDesignNamedElementImpl"
     implements="vip.testops.qa_design.lang.psi.QaDesignNamedElement"
     methods=[getName setName getValue getContent getNameIdentifier getPresentation]
 }
-rule_test_point_design ::= TEST_POINT_KEY SEPARATOR CONTENT (CONCAT_NEW_LINE CONTENT)* (rule_linked_method? rule_test_case_design)* {
+rule_test_point_design ::= TEST_POINT_KEY SEPARATOR CONTENT (CONCAT_NEW_LINE CONTENT)* ((rule_linked_method | rule_tag)* rule_test_case_design)* {
     mixin="vip.testops.qa_design.lang.psi.impl.QaDesignNamedElementImpl"
     implements="vip.testops.qa_design.lang.psi.QaDesignNamedElement"
     methods=[getName setName getValue getContent getNameIdentifier getPresentation]
 }
-rule_test_case_design ::= TEST_CASE_NAME_KEY SEPARATOR CONTENT (CONCAT_NEW_LINE CONTENT)* rule_test_case_desc rule_test_case_data? rule_test_case_step rule_test_case_expect {
+
+rule_test_case_design ::= TEST_CASE_NAME_KEY SEPARATOR CONTENT (CONCAT_NEW_LINE CONTENT)* rule_test_case_desc? rule_test_case_data? rule_test_case_step rule_test_case_expect {
     mixin="vip.testops.qa_design.lang.psi.impl.QaDesignNamedElementImpl"
     implements="vip.testops.qa_design.lang.psi.QaDesignNamedElement"
     methods=[getName setName getValue getContent getNameIdentifier getPresentation]
@@ -53,8 +54,15 @@ rule_test_case_expect ::= TEST_CASE_EXPECT_KEY SEPARATOR CONTENT (CONCAT_NEW_LIN
     methods=[getName setName getValue getContent getNameIdentifier getPresentation]
 }
 
-rule_linked_method ::= LEFT_BOUNDARY LINKED_METHOD_VALUE RIGHT_BOUNDARY {
+rule_linked_method ::= LEFT_BOUNDARY_LINK LINKED_METHOD_VALUE RIGHT_BOUNDARY {
     mixin="vip.testops.qa_design.lang.psi.impl.QaDesignNamedElementImpl"
     implements="vip.testops.qa_design.lang.psi.QaDesignNamedElement"
     methods=[getName setName getValue getNameIdentifier]
 }
+rule_tag ::= LEFT_BOUNDARY_TAG TAG_VALUES RIGHT_BOUNDARY{
+    mixin="vip.testops.qa_design.lang.psi.impl.QaDesignNamedElementImpl"
+    implements="vip.testops.qa_design.lang.psi.QaDesignNamedElement"
+    methods=[getName setName getValue getNameIdentifier]
+}
+
+private TAG_VALUES ::= DOUBLE_QUOTE TAG_VALUE DOUBLE_QUOTE (COMMA DOUBLE_QUOTE TAG_VALUE DOUBLE_QUOTE)*

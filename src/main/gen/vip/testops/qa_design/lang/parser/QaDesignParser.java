@@ -36,6 +36,40 @@ public class QaDesignParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
+  // DOUBLE_QUOTE TAG_VALUE DOUBLE_QUOTE (COMMA DOUBLE_QUOTE TAG_VALUE DOUBLE_QUOTE)*
+  static boolean TAG_VALUES(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "TAG_VALUES")) return false;
+    if (!nextTokenIs(b, DOUBLE_QUOTE)) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = consumeTokens(b, 0, DOUBLE_QUOTE, TAG_VALUE, DOUBLE_QUOTE);
+    r = r && TAG_VALUES_3(b, l + 1);
+    exit_section_(b, m, null, r);
+    return r;
+  }
+
+  // (COMMA DOUBLE_QUOTE TAG_VALUE DOUBLE_QUOTE)*
+  private static boolean TAG_VALUES_3(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "TAG_VALUES_3")) return false;
+    while (true) {
+      int c = current_position_(b);
+      if (!TAG_VALUES_3_0(b, l + 1)) break;
+      if (!empty_element_parsed_guard_(b, "TAG_VALUES_3", c)) break;
+    }
+    return true;
+  }
+
+  // COMMA DOUBLE_QUOTE TAG_VALUE DOUBLE_QUOTE
+  private static boolean TAG_VALUES_3_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "TAG_VALUES_3_0")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = consumeTokens(b, 0, COMMA, DOUBLE_QUOTE, TAG_VALUE, DOUBLE_QUOTE);
+    exit_section_(b, m, null, r);
+    return r;
+  }
+
+  /* ********************************************************** */
   // INSIDE
   public static boolean fake_rule(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "fake_rule")) return false;
@@ -93,13 +127,13 @@ public class QaDesignParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // REQUIREMENT_KEY SEPARATOR CONTENT (CONCAT_NEW_LINE CONTENT)*
+  // FEATURE SEPARATOR CONTENT (CONCAT_NEW_LINE CONTENT)*
   public static boolean rule_first_line(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "rule_first_line")) return false;
-    if (!nextTokenIs(b, REQUIREMENT_KEY)) return false;
+    if (!nextTokenIs(b, FEATURE)) return false;
     boolean r;
     Marker m = enter_section_(b);
-    r = consumeTokens(b, 0, REQUIREMENT_KEY, SEPARATOR, CONTENT);
+    r = consumeTokens(b, 0, FEATURE, SEPARATOR, CONTENT);
     r = r && rule_first_line_3(b, l + 1);
     exit_section_(b, m, RULE_FIRST_LINE, r);
     return r;
@@ -127,14 +161,28 @@ public class QaDesignParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // LEFT_BOUNDARY LINKED_METHOD_VALUE RIGHT_BOUNDARY
+  // LEFT_BOUNDARY_LINK LINKED_METHOD_VALUE RIGHT_BOUNDARY
   public static boolean rule_linked_method(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "rule_linked_method")) return false;
-    if (!nextTokenIs(b, LEFT_BOUNDARY)) return false;
+    if (!nextTokenIs(b, LEFT_BOUNDARY_LINK)) return false;
     boolean r;
     Marker m = enter_section_(b);
-    r = consumeTokens(b, 0, LEFT_BOUNDARY, LINKED_METHOD_VALUE, RIGHT_BOUNDARY);
+    r = consumeTokens(b, 0, LEFT_BOUNDARY_LINK, LINKED_METHOD_VALUE, RIGHT_BOUNDARY);
     exit_section_(b, m, RULE_LINKED_METHOD, r);
+    return r;
+  }
+
+  /* ********************************************************** */
+  // LEFT_BOUNDARY_TAG TAG_VALUES RIGHT_BOUNDARY
+  public static boolean rule_tag(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "rule_tag")) return false;
+    if (!nextTokenIs(b, LEFT_BOUNDARY_TAG)) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = consumeToken(b, LEFT_BOUNDARY_TAG);
+    r = r && TAG_VALUES(b, l + 1);
+    r = r && consumeToken(b, RIGHT_BOUNDARY);
+    exit_section_(b, m, RULE_TAG, r);
     return r;
   }
 
@@ -215,7 +263,7 @@ public class QaDesignParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // TEST_CASE_NAME_KEY SEPARATOR CONTENT (CONCAT_NEW_LINE CONTENT)* rule_test_case_desc rule_test_case_data? rule_test_case_step rule_test_case_expect
+  // TEST_CASE_NAME_KEY SEPARATOR CONTENT (CONCAT_NEW_LINE CONTENT)* rule_test_case_desc? rule_test_case_data? rule_test_case_step rule_test_case_expect
   public static boolean rule_test_case_design(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "rule_test_case_design")) return false;
     if (!nextTokenIs(b, TEST_CASE_NAME_KEY)) return false;
@@ -223,7 +271,7 @@ public class QaDesignParser implements PsiParser, LightPsiParser {
     Marker m = enter_section_(b);
     r = consumeTokens(b, 0, TEST_CASE_NAME_KEY, SEPARATOR, CONTENT);
     r = r && rule_test_case_design_3(b, l + 1);
-    r = r && rule_test_case_desc(b, l + 1);
+    r = r && rule_test_case_design_4(b, l + 1);
     r = r && rule_test_case_design_5(b, l + 1);
     r = r && rule_test_case_step(b, l + 1);
     r = r && rule_test_case_expect(b, l + 1);
@@ -250,6 +298,13 @@ public class QaDesignParser implements PsiParser, LightPsiParser {
     r = consumeTokens(b, 0, CONCAT_NEW_LINE, CONTENT);
     exit_section_(b, m, null, r);
     return r;
+  }
+
+  // rule_test_case_desc?
+  private static boolean rule_test_case_design_4(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "rule_test_case_design_4")) return false;
+    rule_test_case_desc(b, l + 1);
+    return true;
   }
 
   // rule_test_case_data?
@@ -328,7 +383,7 @@ public class QaDesignParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // TEST_POINT_KEY SEPARATOR CONTENT (CONCAT_NEW_LINE CONTENT)* (rule_linked_method? rule_test_case_design)*
+  // TEST_POINT_KEY SEPARATOR CONTENT (CONCAT_NEW_LINE CONTENT)* ((rule_linked_method | rule_tag)* rule_test_case_design)*
   public static boolean rule_test_point_design(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "rule_test_point_design")) return false;
     if (!nextTokenIs(b, TEST_POINT_KEY)) return false;
@@ -362,7 +417,7 @@ public class QaDesignParser implements PsiParser, LightPsiParser {
     return r;
   }
 
-  // (rule_linked_method? rule_test_case_design)*
+  // ((rule_linked_method | rule_tag)* rule_test_case_design)*
   private static boolean rule_test_point_design_4(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "rule_test_point_design_4")) return false;
     while (true) {
@@ -373,7 +428,7 @@ public class QaDesignParser implements PsiParser, LightPsiParser {
     return true;
   }
 
-  // rule_linked_method? rule_test_case_design
+  // (rule_linked_method | rule_tag)* rule_test_case_design
   private static boolean rule_test_point_design_4_0(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "rule_test_point_design_4_0")) return false;
     boolean r;
@@ -384,11 +439,24 @@ public class QaDesignParser implements PsiParser, LightPsiParser {
     return r;
   }
 
-  // rule_linked_method?
+  // (rule_linked_method | rule_tag)*
   private static boolean rule_test_point_design_4_0_0(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "rule_test_point_design_4_0_0")) return false;
-    rule_linked_method(b, l + 1);
+    while (true) {
+      int c = current_position_(b);
+      if (!rule_test_point_design_4_0_0_0(b, l + 1)) break;
+      if (!empty_element_parsed_guard_(b, "rule_test_point_design_4_0_0", c)) break;
+    }
     return true;
+  }
+
+  // rule_linked_method | rule_tag
+  private static boolean rule_test_point_design_4_0_0_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "rule_test_point_design_4_0_0_0")) return false;
+    boolean r;
+    r = rule_linked_method(b, l + 1);
+    if (!r) r = rule_tag(b, l + 1);
+    return r;
   }
 
 }

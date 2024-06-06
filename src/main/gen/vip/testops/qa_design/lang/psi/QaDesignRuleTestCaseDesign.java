@@ -11,7 +11,7 @@ public interface QaDesignRuleTestCaseDesign extends QaDesignNamedElement {
   @Nullable
   QaDesignRuleTestCaseData getRuleTestCaseData();
 
-  @NotNull
+  @Nullable
   QaDesignRuleTestCaseDesc getRuleTestCaseDesc();
 
   @NotNull

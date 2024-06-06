@@ -34,9 +34,9 @@ public class QaDesignRuleTestCaseDesignImpl extends QaDesignNamedElementImpl imp
   }
 
   @Override
-  @NotNull
+  @Nullable
   public QaDesignRuleTestCaseDesc getRuleTestCaseDesc() {
-    return findNotNullChildByClass(QaDesignRuleTestCaseDesc.class);
+    return findChildByClass(QaDesignRuleTestCaseDesc.class);
   }
 
   @Override

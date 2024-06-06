@@ -12,6 +12,9 @@ public interface QaDesignRuleTestPointDesign extends QaDesignNamedElement {
   List<QaDesignRuleLinkedMethod> getRuleLinkedMethodList();
 
   @NotNull
+  List<QaDesignRuleTag> getRuleTagList();
+
+  @NotNull
   List<QaDesignRuleTestCaseDesign> getRuleTestCaseDesignList();
 
   String getName();

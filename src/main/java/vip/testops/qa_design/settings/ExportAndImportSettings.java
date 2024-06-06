@@ -7,16 +7,16 @@ import com.intellij.openapi.components.Storage;
 import com.intellij.openapi.extensions.ExtensionPointListener;
 import com.intellij.openapi.extensions.PluginDescriptor;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @State(name = "ExportAndImportSettings", storages = @Storage("qa_design_excel_mapping_settings.xml"))
 public final class ExportAndImportSettings implements PersistentStateComponent<ExportAndImportSettings.State> {
 
-    private final List<FieldMapping> fieldMappings = new ArrayList<>();
+    private final List<FieldMapping> fieldMappings = new LinkedList<>();
 
     public ExportAndImportSettings() {
         fieldMappings.addAll(FieldMapping.EP_NAME.getExtensionList());
@@ -35,10 +35,7 @@ public final class ExportAndImportSettings implements PersistentStateComponent<E
 
             @Override
             public void extensionRemoved(@NotNull FieldMapping extension, @NotNull PluginDescriptor pluginDescriptor) {
-                FieldMapping find = fieldMappings.stream().filter(m -> m.fieldName.equals(extension.fieldName)).findFirst().orElse(null);
-                if(find != null) {
-                    fieldMappings.remove(find);
-                }
+                fieldMappings.stream().filter(m -> m.fieldName.equals(extension.fieldName)).findFirst().ifPresent(fieldMappings::remove);
             }
 
 
@@ -97,10 +94,10 @@ public final class ExportAndImportSettings implements PersistentStateComponent<E
     }
 
     private boolean isContain(List<FieldMapping> fieldMappings, FieldMapping mapping){
-        return fieldMappings.stream().anyMatch(m -> m.fieldName.equals(mapping.fieldName));
+        return fieldMappings.stream().anyMatch(m -> m.equals(mapping));
     }
     private FieldMapping findMapping(List<FieldMapping> fieldMappings, FieldMapping mapping){
-        return fieldMappings.stream().filter(m -> m.fieldName.equals(mapping.fieldName)).findFirst().orElse(null);
+        return fieldMappings.stream().filter(m -> m.equals(mapping)).findFirst().orElse(null);
     }
 
     public static class State {

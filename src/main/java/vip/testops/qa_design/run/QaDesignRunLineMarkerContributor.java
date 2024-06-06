@@ -51,6 +51,9 @@ public class QaDesignRunLineMarkerContributor extends RunLineMarkerContributor {
         String url = getUrl(linkElement.getText());
 
         PsiElement refElement = ReferenceUtil.getReference(linkElement);
+        if (refElement == null) {
+            return null;
+        }
         TestStateStorage.Record state = TestStateStorage.getInstance(refElement.getProject()).getState(url);
         return getInfo(state, type != QaDesignTypes.TEST_CASE_NAME_KEY);
     }

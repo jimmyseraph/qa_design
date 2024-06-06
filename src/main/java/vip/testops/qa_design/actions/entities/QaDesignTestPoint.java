@@ -1,5 +1,6 @@
 package vip.testops.qa_design.actions.entities;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class QaDesignTestPoint {
@@ -9,6 +10,10 @@ public class QaDesignTestPoint {
     public QaDesignTestPoint(String name, List<QaDesignTestCase> testCases) {
         this.name = name;
         this.testCases = testCases;
+    }
+
+    public QaDesignTestPoint(String name) {
+        this(name, new ArrayList<>());
     }
 
     public QaDesignTestPoint() {

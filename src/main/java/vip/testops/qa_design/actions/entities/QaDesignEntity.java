@@ -1,26 +1,31 @@
 package vip.testops.qa_design.actions.entities;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class QaDesignEntity {
-    String requirementId;
-    String requirement;
+    String feature;
     List<QaDesignTestPoint> testPoints;
 
-    public String getRequirementId() {
-        return requirementId;
+    public QaDesignEntity() {
+        this("", new ArrayList<>());
     }
 
-    public void setRequirementId(String requirementId) {
-        this.requirementId = requirementId;
+    public QaDesignEntity(String feature) {
+        this(feature, new ArrayList<>());
     }
 
-    public String getRequirement() {
-        return requirement;
+    public QaDesignEntity(String feature, List<QaDesignTestPoint> testPoints) {
+        this.feature = feature;
+        this.testPoints = testPoints;
     }
 
-    public void setRequirement(String requirement) {
-        this.requirement = requirement;
+    public String getFeature() {
+        return feature;
+    }
+
+    public void setFeature(String feature) {
+        this.feature = feature;
     }
 
     public List<QaDesignTestPoint> getTestPoints() {

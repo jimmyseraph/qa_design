@@ -23,6 +23,23 @@ public class QaDesignPsiImplUtil {
         }
     }
 
+    public static String getValue(QaDesignRuleTag element) {
+        StringBuilder sb = new StringBuilder();
+        ASTNode valueNode = element.getNode().findChildByType(QaDesignTypes.TAG_VALUE);
+        while (valueNode != null) {
+            if(valueNode.getElementType() != QaDesignTypes.TAG_VALUE) {
+                valueNode = valueNode.getTreeNext();
+                continue;
+            }
+            if(!sb.isEmpty()) {
+                sb.append(",");
+            }
+            sb.append(valueNode.getText());
+            valueNode = valueNode.getTreeNext();
+        }
+        return sb.toString();
+    }
+
     public static String getValue(QaDesignRuleFirstLine element) {
         ASTNode valueNode = element.getNode().findChildByType(QaDesignTypes.CONTENT);
         if (valueNode != null) {
@@ -127,8 +144,12 @@ public class QaDesignPsiImplUtil {
         return QaDesignBundle.message("keywords.qa_design.link");
     }
 
+    public static String getName(QaDesignRuleTag element) {
+        return QaDesignBundle.message("keywords.qa_design.tag");
+    }
+
     public static String getName(QaDesignRuleFirstLine element) {
-        return QaDesignBundle.message("keywords.qa_design.requirement");
+        return QaDesignBundle.message("keywords.qa_design.feature");
     }
 
     public static String getName(QaDesignRuleTestPointDesign element) {
@@ -156,6 +177,9 @@ public class QaDesignPsiImplUtil {
     }
 
     public static PsiElement setName(QaDesignRuleLinkedMethod element, String newName) {
+        return element;
+    }
+    public static PsiElement setName(QaDesignRuleTag element, String newName) {
         return element;
     }
 
@@ -193,8 +217,14 @@ public class QaDesignPsiImplUtil {
         return element;
     }
 
+    public static PsiElement getNameIdentifier(QaDesignRuleTag element) {
+//        ASTNode keyNode = element.getNode().findChildByType(QaDesignTypes.LINKED_METHOD_KEY);
+//        return keyNode != null ? keyNode.getPsi() : null;
+        return element;
+    }
+
     public static PsiElement getNameIdentifier(QaDesignRuleFirstLine element) {
-        ASTNode keyNode = element.getNode().findChildByType(QaDesignTypes.REQUIREMENT_KEY);
+        ASTNode keyNode = element.getNode().findChildByType(QaDesignTypes.FEATURE);
         return keyNode != null ? keyNode.getPsi() : null;
     }
 

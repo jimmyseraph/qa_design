@@ -47,7 +47,7 @@ public class QaDesignSyntaxHighlighter extends SyntaxHighlighterBase {
         if (tokenType.equals(QaDesignTypes.SEPARATOR)) {
             return SEPARATOR_KEYS;
         }
-        if (tokenType.equals(QaDesignTypes.REQUIREMENT_KEY) ||
+        if (tokenType.equals(QaDesignTypes.FEATURE) ||
                 tokenType.equals(QaDesignTypes.TEST_POINT_KEY) ||
                 tokenType.equals(QaDesignTypes.TEST_CASE_DATA_KEY) ||
                 tokenType.equals(QaDesignTypes.TEST_CASE_STEP_KEY) ||
@@ -66,7 +66,7 @@ public class QaDesignSyntaxHighlighter extends SyntaxHighlighterBase {
         if (tokenType.equals(TokenType.BAD_CHARACTER)) {
             return BAD_CHAR_KEYS;
         }
-        if (tokenType.equals(QaDesignTypes.RULE_LINKED_METHOD)) {
+        if (tokenType.equals(QaDesignTypes.RULE_LINKED_METHOD) || tokenType.equals(QaDesignTypes.RULE_TAG)) {
             return ANNOTATION_KEYS;
         }
         return EMPTY_KEYS;

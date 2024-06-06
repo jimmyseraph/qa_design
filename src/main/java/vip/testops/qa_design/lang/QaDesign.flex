@@ -21,20 +21,23 @@ VALUE_CHARACTER=[^\n\f\\]
 CONCAT_NEW_LINE = "\\"
 END_OF_LINE_COMMENT="#"[^\r\n]*
 SEPARATOR=[:]
+COMMA=[,]
+DOUBLE_QUOTE=[\"]
 KEY_CHARACTER=[^:\ \n\t\f\\\(\)\"]
 
 %state WAITING_VALUE
 %state WAITING_LINKED_METHOD
+%state WAITING_TAG
 %%
 
 <YYINITIAL> {END_OF_LINE_COMMENT}                           { yybegin(YYINITIAL); return QaDesignTypes.COMMENT; }
-<YYINITIAL> @@link\({WHITE_SPACE}*\"                              { yybegin(WAITING_LINKED_METHOD); return QaDesignTypes.LEFT_BOUNDARY; }
-
+<YYINITIAL> @@link\({WHITE_SPACE}*\"                        { yybegin(WAITING_LINKED_METHOD); return QaDesignTypes.LEFT_BOUNDARY_LINK; }
+<YYINITIAL> @@tag\({WHITE_SPACE}*                           { yybegin(WAITING_TAG); return QaDesignTypes.LEFT_BOUNDARY_TAG; }
 <YYINITIAL> {KEY_CHARACTER}+                                {
                                                                 yybegin(YYINITIAL);
                                                                 String text = yytext().toString().trim();
-                                                                if(text.equals(QaDesignBundle.message("keywords.qa_design.requirement"))){
-                                                                    return QaDesignTypes.REQUIREMENT_KEY;
+                                                                if(text.equals(QaDesignBundle.message("keywords.qa_design.feature"))){
+                                                                    return QaDesignTypes.FEATURE;
                                                                 }
                                                                 else if (text.equals(QaDesignBundle.message("keywords.qa_design.test_point"))){
                                                                     return QaDesignTypes.TEST_POINT_KEY;
@@ -71,8 +74,15 @@ KEY_CHARACTER=[^:\ \n\t\f\\\(\)\"]
 
 
 <WAITING_LINKED_METHOD> {
-    \"{WHITE_SPACE}*\)                  { yybegin(YYINITIAL); return QaDesignTypes.RIGHT_BOUNDARY; }
-    [^ \"\n\r\f\t\(\)]+                       { return QaDesignTypes.LINKED_METHOD_VALUE; }
-    {WHITE_SPACE}+                         { return TokenType.BAD_CHARACTER; }
+    \"{WHITE_SPACE}*\)              { yybegin(YYINITIAL); return QaDesignTypes.RIGHT_BOUNDARY; }
+    [^ \"\n\r\f\t\(\)]+             { return QaDesignTypes.LINKED_METHOD_VALUE; }
+    {WHITE_SPACE}+                  { return TokenType.BAD_CHARACTER; }
 }
+<WAITING_TAG> {
+    {WHITE_SPACE}*\)                { yybegin(YYINITIAL); return QaDesignTypes.RIGHT_BOUNDARY; }
+    [^ ,\"\n\r\f\t\(\)]+            { return QaDesignTypes.TAG_VALUE; }
+    {COMMA}                         { return QaDesignTypes.COMMA; }
+    {DOUBLE_QUOTE}                  { return QaDesignTypes.DOUBLE_QUOTE; }
+}
+
 [^]                                                         { return TokenType.BAD_CHARACTER; }

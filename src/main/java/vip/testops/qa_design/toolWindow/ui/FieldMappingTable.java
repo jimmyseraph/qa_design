@@ -30,6 +30,38 @@ public class FieldMappingTable extends ListTableWithButtons<FieldMappingTable.It
 
     private static final String[] selectOptions = Arrays.stream(QaDesignKeyword.values()).map(QaDesignKeyword::getName).toArray(String[]::new);
 
+    private static final ColumnInfo<Item, String> EXCEL_FIELD_INDEX_COLUMN = new ColumnInfo<>("Excel Column") {
+        @Override
+        public @Nullable String valueOf(Item item) {
+            return item.column;
+        }
+
+        @Override
+        public @Nullable TableCellEditor getEditor(Item item) {
+            ExtendableTextField cellEditor = new ExtendableTextField();
+            cellEditor.putClientProperty(DarculaUIUtil.COMPACT_PROPERTY, Boolean.TRUE);
+
+            return new DefaultCellEditor(cellEditor);
+        }
+
+        @Override
+        public @Nullable TableCellRenderer getRenderer(Item item) {
+            DefaultTableCellRenderer renderer = new DefaultTableCellRenderer();
+            renderer.setText(item.column);
+            return renderer;
+        }
+
+        @Override
+        public boolean isCellEditable(Item item) {
+            return true;
+        }
+
+        @Override
+        public void setValue(Item item, String value) {
+            item.column = value;
+        }
+    };
+
     private static final ColumnInfo<Item, String> EXCEL_FIELD_COLUMN = new ColumnInfo<>("Excel Field") {
         @Override
         public @Nullable String valueOf(Item item) {
@@ -105,12 +137,12 @@ public class FieldMappingTable extends ListTableWithButtons<FieldMappingTable.It
 
     @Override
     protected ListTableModel<Item> createListModel() {
-        return new ListTableModel<>(EXCEL_FIELD_COLUMN, QA_DESIGN_KEYWORD_COLUMN);
+        return new ListTableModel<>(EXCEL_FIELD_INDEX_COLUMN, EXCEL_FIELD_COLUMN, QA_DESIGN_KEYWORD_COLUMN);
     }
 
     @Override
     protected Item createElement() {
-        return new Item("", "");
+        return new Item("A", "", "");
     }
 
     @Override
@@ -120,7 +152,7 @@ public class FieldMappingTable extends ListTableWithButtons<FieldMappingTable.It
 
     @Override
     protected Item cloneElement(Item variable) {
-        return new Item(variable.excelFieldName, variable.qaDesignKeyword);
+        return new Item(variable.column, variable.excelFieldName, variable.qaDesignKeyword);
     }
 
     @Override
@@ -132,7 +164,7 @@ public class FieldMappingTable extends ListTableWithButtons<FieldMappingTable.It
         List<Item> elements = new ArrayList<>();
         for (FieldMapping fieldMapping : fieldMappings) {
 
-            elements.add(new Item(fieldMapping.getFieldName(), fieldMapping.getQaDesignKeyword()));
+            elements.add(new Item(fieldMapping.getColumn(), fieldMapping.getFieldName(), fieldMapping.getQaDesignKeyword()));
         }
         setValues(elements);
         refreshValues();
@@ -142,16 +174,18 @@ public class FieldMappingTable extends ListTableWithButtons<FieldMappingTable.It
         List<Item> elements = getElements();
         List<FieldMapping> fieldMappings = new ArrayList<>();
         for(Item item : elements) {
-            fieldMappings.add(new FieldMapping(item.excelFieldName, item.qaDesignKeyword));
+            fieldMappings.add(new FieldMapping(item.column, item.excelFieldName, item.qaDesignKeyword));
         }
         return fieldMappings;
     }
 
     static class Item {
+        String column;
         String excelFieldName;
         String qaDesignKeyword;
 
-        Item(String excelFieldName, String qaDesignKeyword) {
+        Item(String column, String excelFieldName, String qaDesignKeyword) {
+            this.column = column;
             this.excelFieldName = excelFieldName;
             this.qaDesignKeyword = qaDesignKeyword;
         }

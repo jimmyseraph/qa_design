@@ -11,6 +11,7 @@ public interface QaDesignTypes {
   IElementType FAKE_RULE = new QaDesignElementType("FAKE_RULE");
   IElementType RULE_FIRST_LINE = new QaDesignElementType("RULE_FIRST_LINE");
   IElementType RULE_LINKED_METHOD = new QaDesignElementType("RULE_LINKED_METHOD");
+  IElementType RULE_TAG = new QaDesignElementType("RULE_TAG");
   IElementType RULE_TEST_CASE_DATA = new QaDesignElementType("RULE_TEST_CASE_DATA");
   IElementType RULE_TEST_CASE_DESC = new QaDesignElementType("RULE_TEST_CASE_DESC");
   IElementType RULE_TEST_CASE_DESIGN = new QaDesignElementType("RULE_TEST_CASE_DESIGN");
@@ -18,16 +19,20 @@ public interface QaDesignTypes {
   IElementType RULE_TEST_CASE_STEP = new QaDesignElementType("RULE_TEST_CASE_STEP");
   IElementType RULE_TEST_POINT_DESIGN = new QaDesignElementType("RULE_TEST_POINT_DESIGN");
 
+  IElementType COMMA = new QaDesignTokenType("COMMA");
   IElementType COMMENT = new QaDesignTokenType("COMMENT");
   IElementType CONCAT_NEW_LINE = new QaDesignTokenType("CONCAT_NEW_LINE");
   IElementType CONTENT = new QaDesignTokenType("CONTENT");
   IElementType CRLF = new QaDesignTokenType("CRLF");
+  IElementType DOUBLE_QUOTE = new QaDesignTokenType("DOUBLE_QUOTE");
+  IElementType FEATURE = new QaDesignTokenType("FEATURE");
   IElementType INSIDE = new QaDesignTokenType("INSIDE");
-  IElementType LEFT_BOUNDARY = new QaDesignTokenType("LEFT_BOUNDARY");
+  IElementType LEFT_BOUNDARY_LINK = new QaDesignTokenType("LEFT_BOUNDARY_LINK");
+  IElementType LEFT_BOUNDARY_TAG = new QaDesignTokenType("LEFT_BOUNDARY_TAG");
   IElementType LINKED_METHOD_VALUE = new QaDesignTokenType("LINKED_METHOD_VALUE");
-  IElementType REQUIREMENT_KEY = new QaDesignTokenType("REQUIREMENT_KEY");
   IElementType RIGHT_BOUNDARY = new QaDesignTokenType("RIGHT_BOUNDARY");
   IElementType SEPARATOR = new QaDesignTokenType("SEPARATOR");
+  IElementType TAG_VALUE = new QaDesignTokenType("TAG_VALUE");
   IElementType TEST_CASE_DATA_KEY = new QaDesignTokenType("TEST_CASE_DATA_KEY");
   IElementType TEST_CASE_DESC_KEY = new QaDesignTokenType("TEST_CASE_DESC_KEY");
   IElementType TEST_CASE_EXPECT_KEY = new QaDesignTokenType("TEST_CASE_EXPECT_KEY");
@@ -46,6 +51,9 @@ public interface QaDesignTypes {
       }
       else if (type == RULE_LINKED_METHOD) {
         return new QaDesignRuleLinkedMethodImpl(node);
+      }
+      else if (type == RULE_TAG) {
+        return new QaDesignRuleTagImpl(node);
       }
       else if (type == RULE_TEST_CASE_DATA) {
         return new QaDesignRuleTestCaseDataImpl(node);

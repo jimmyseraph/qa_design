@@ -12,6 +12,9 @@ public class ReferenceUtil {
     public static PsiElement getReference(PsiElement element) {
 
         PsiReference[] refs = element.getReferences();
+        if(refs.length == 0) {
+            return null;
+        }
         // get last ref in array
         PsiReference ref = refs[refs.length - 1];
         return ref.resolve();

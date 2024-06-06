@@ -1,5 +1,6 @@
 package vip.testops.qa_design.actions;
 
+import com.intellij.ide.fileTemplates.FileTemplateManager;
 import com.intellij.lang.PsiBuilder;
 import com.intellij.lang.PsiBuilderFactory;
 import com.intellij.lang.PsiBuilderUtil;
@@ -24,10 +25,13 @@ import vip.testops.qa_design.settings.FieldMapping;
 import vip.testops.qa_design.utils.ExcelUtils;
 import vip.testops.qa_design.utils.FileUtil;
 
+import javax.swing.*;
+import java.awt.*;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.*;
+import java.util.List;
 
 public class ImportAction extends AnAction {
     private final ExportAndImportSettings settings = ExportAndImportSettings.getSettings();
@@ -59,27 +63,26 @@ public class ImportAction extends AnAction {
             try {
                 ExcelUtils excelUtils = new ExcelUtils(excelFile, true);
                 List<FieldMapping> fieldMappings = settings.getFieldMappings();
-                List<List<String>> data = excelUtils.read(fieldMappings);
+                List<QaDesignEntity> data = excelUtils.read(fieldMappings);
                 excelUtils.close();
                 if (data.size() == 0) {
                     return;
                 }
-                generatePsiFiles(data, targetDirectory);
+                generatePsiFiles(data, targetDirectory, excelFile.getName());
             } catch (IOException ex) {
                 throw new RuntimeException(ex);
             }
         }
     }
 
-    private void generatePsiFiles(List<List<String>> data, PsiDirectory targetDirectory) throws IOException {
-        List<QaDesignEntity> entities = parseExcelData(data);
-        for (QaDesignEntity entity : entities) {
-            String filename = entity.getRequirementId().isBlank() ? "qa_design.qd" : entity.getRequirementId() + ".qd";
+    private void generatePsiFiles(List<QaDesignEntity> data, PsiDirectory targetDirectory, String excelFileName) throws IOException {
+        for (QaDesignEntity entity : data) {
+            String filename = entity.getFeature().isBlank() ? "qa_design.qd" : entity.getFeature() + ".qd";
             filename = FileUtil.getNonRepetitiveFilename(filename, targetDirectory, "qd");
             File file = new File(targetDirectory.getVirtualFile().getPath(), filename);
 
             try (FileWriter writer = new FileWriter(file)) {
-                String firstLineContent = QaDesignKeyword.REQUIREMENT.getName() + ": " + entity.getRequirement().replace("\n", "\\\n");
+                String firstLineContent = QaDesignKeyword.FEATURE.getName() + ": " + entity.getFeature().replace("\n", "\\\n");
                 writer.write(firstLineContent);
                 writer.write("\n\n");
                 for (QaDesignTestPoint testPoint : entity.getTestPoints()) {
@@ -87,15 +90,41 @@ public class ImportAction extends AnAction {
                     writer.write(testPointLineContent);
                     writer.write("\n");
                     for (QaDesignTestCase testCase : testPoint.getTestCases()) {
+                        if(testCase.getLink() != null && !testCase.getLink().equals("")) {
+                            String testCaseLink = "\t@@"+QaDesignKeyword.TEST_CASE_LINK.getName()+"(\""+testCase.getLink()+"\")";
+                            writer.write(testCaseLink);
+                            writer.write("\n");
+                        }
+                        if (testCase.getTags() != null && testCase.getTags().size() != 0) {
+                            StringBuilder sb = new StringBuilder("\t@@");
+                            sb.append(QaDesignKeyword.TEST_CASE_TAG.getName());
+                            sb.append("(");
+                            for(String tag: testCase.getTags()) {
+                                if (tag != null && !tag.equals("")) {
+                                    sb.append("\"").append(tag).append("\",");
+                                }
+                            }
+                            if(sb.toString().endsWith(",")){
+                                sb.deleteCharAt(sb.toString().length()-1);
+                            }
+                            sb.append(")");
+                            writer.write(sb.toString());
+                            writer.write("\n");
+                        }
                         String testCaseLineContent = "\t" + QaDesignKeyword.TEST_CASE + ": " + testCase.getName().replace("\n", "\\\n");
                         writer.write(testCaseLineContent);
                         writer.write("\n");
-                        String testCaseDescLineContent = "\t\t" + QaDesignKeyword.TEST_CASE_DESC.getName() + ": " + testCase.getDesc().replace("\n", "\\\n");
-                        writer.write(testCaseDescLineContent);
-                        writer.write("\n");
-                        String testCaseDataLineContent = "\t\t" + QaDesignKeyword.TEST_CASE_DATA.getName() + ": " + testCase.getData().replace("\n", "\\\n");
-                        writer.write(testCaseDataLineContent);
-                        writer.write("\n");
+                        if (testCase.getDesc() != null && !testCase.getDesc().equals("")) {
+                            String testCaseDescLineContent = "\t\t" + QaDesignKeyword.TEST_CASE_DESC.getName() + ": " + testCase.getDesc().replace("\n", "\\\n");
+                            writer.write(testCaseDescLineContent);
+                            writer.write("\n");
+                        }
+                        if (testCase.getData() != null && !testCase.getData().equals("")) {
+                            String testCaseDataLineContent = "\t\t" + QaDesignKeyword.TEST_CASE_DATA.getName() + ": " + testCase.getData().replace("\n", "\\\n");
+                            writer.write(testCaseDataLineContent);
+                            writer.write("\n");
+                        }
+
                         String testCaseStepLineContent = "\t\t" + QaDesignKeyword.TEST_CASE_STEP.getName() + ": " + testCase.getStep().replace("\n", "\\\n");
                         writer.write(testCaseStepLineContent);
                         writer.write("\n");
@@ -109,59 +138,21 @@ public class ImportAction extends AnAction {
             }
 
         }
-    }
+        JDialog dialog = new JDialog();
+        dialog.setTitle("Import Information");
+        dialog.setSize(400,100);
+        dialog.setLocationRelativeTo(null);
+        JPanel contentPanel = new JPanel();
+        dialog.add(contentPanel, BorderLayout.CENTER);
+        String text = excelFileName + "has imported successfully " + data.size() + "item case design.";
+        JLabel label = new JLabel(text);
+        contentPanel.add(label, BorderLayout.NORTH);
 
-    private List<QaDesignEntity> parseExcelData(List<List<String>> data) {
-        List<QaDesignEntity> entities = new ArrayList<>();
-        for(List<String> row : data) {
-            if(row.size() < QaDesignKeyword.values().length) {
-                QaDesignNotifier.notifyError(null, "Cannot get required data from import excel!");
-                return new ArrayList<>();
-            }
-            int req_index = 0;
-            for(; req_index < entities.size(); req_index++) {
-                if(entities.get(req_index).getRequirement().equals(row.get(QaDesignKeyword.REQUIREMENT.getIndex()))) {
-                    break;
-                }
-            }
-            QaDesignEntity entity;
-            if(req_index < entities.size()) {
-                entity = entities.get(req_index);
-            } else {
-                entity = new QaDesignEntity();
-                entity.setRequirementId(row.get(QaDesignKeyword.REQUIREMENT_ID.getIndex()));
-                entity.setRequirement(row.get(QaDesignKeyword.REQUIREMENT.getIndex()));
-                entities.add(entity);
-            }
-
-            if(entity.getTestPoints() == null) {
-                entity.setTestPoints(new ArrayList<>());
-            }
-            int i = 0;
-            for(; i < entity.getTestPoints().size(); i++) {
-                if(entity.getTestPoints().get(i).getName().equals(row.get(QaDesignKeyword.TEST_POINT.getIndex()))) {
-                    break;
-                }
-            }
-            QaDesignTestCase testcase = new QaDesignTestCase(
-                    row.get(QaDesignKeyword.TEST_CASE.getIndex()),
-                    row.get(QaDesignKeyword.TEST_CASE_DESC.getIndex()),
-                    row.get(QaDesignKeyword.TEST_CASE_DATA.getIndex()),
-                    row.get(QaDesignKeyword.TEST_CASE_STEP.getIndex()),
-                    row.get(QaDesignKeyword.TEST_CASE_EXPECT.getIndex())
-            );
-            if(i < entity.getTestPoints().size()) {
-                entity.getTestPoints().get(i).getTestCases().add(testcase);
-            } else {
-                QaDesignTestPoint testPoint = new QaDesignTestPoint();
-                testPoint.setName(row.get(QaDesignKeyword.TEST_POINT.getIndex()));
-                List<QaDesignTestCase> testCases = new ArrayList<>();
-                testCases.add(testcase);
-                testPoint.setTestCases(testCases);
-                entity.getTestPoints().add(testPoint);
-            }
-        }
-        return entities;
+        JButton closeButton = new JButton("OK");
+        closeButton.setBounds(10, 50, 100, 25);
+        contentPanel.add(closeButton, BorderLayout.NORTH);
+        closeButton.addActionListener(e -> dialog.setVisible(false));
+        dialog.setVisible(true);
     }
 
 }

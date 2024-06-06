@@ -30,7 +30,8 @@ public class QaDesignBlock extends AbstractBlock {
                 Alignment alignment = Alignment.createAlignment();
                 int level = 0;
                 if (child.getElementType() == QaDesignTypes.RULE_TEST_CASE_DESIGN ||
-                        child.getElementType() == QaDesignTypes.RULE_LINKED_METHOD
+                        child.getElementType() == QaDesignTypes.RULE_LINKED_METHOD ||
+                        child.getElementType() == QaDesignTypes.RULE_TAG
                 ) {
                     level = 1;
                 } else if (

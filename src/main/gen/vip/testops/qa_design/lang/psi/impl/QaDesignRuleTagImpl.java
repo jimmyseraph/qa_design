@@ -9,40 +9,21 @@ import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
 import static vip.testops.qa_design.lang.psi.QaDesignTypes.*;
 import vip.testops.qa_design.lang.psi.*;
-import com.intellij.navigation.ItemPresentation;
 
-public class QaDesignRuleTestPointDesignImpl extends QaDesignNamedElementImpl implements QaDesignRuleTestPointDesign {
+public class QaDesignRuleTagImpl extends QaDesignNamedElementImpl implements QaDesignRuleTag {
 
-  public QaDesignRuleTestPointDesignImpl(@NotNull ASTNode node) {
+  public QaDesignRuleTagImpl(@NotNull ASTNode node) {
     super(node);
   }
 
   public void accept(@NotNull QaDesignVisitor visitor) {
-    visitor.visitRuleTestPointDesign(this);
+    visitor.visitRuleTag(this);
   }
 
   @Override
   public void accept(@NotNull PsiElementVisitor visitor) {
     if (visitor instanceof QaDesignVisitor) accept((QaDesignVisitor)visitor);
     else super.accept(visitor);
-  }
-
-  @Override
-  @NotNull
-  public List<QaDesignRuleLinkedMethod> getRuleLinkedMethodList() {
-    return PsiTreeUtil.getChildrenOfTypeAsList(this, QaDesignRuleLinkedMethod.class);
-  }
-
-  @Override
-  @NotNull
-  public List<QaDesignRuleTag> getRuleTagList() {
-    return PsiTreeUtil.getChildrenOfTypeAsList(this, QaDesignRuleTag.class);
-  }
-
-  @Override
-  @NotNull
-  public List<QaDesignRuleTestCaseDesign> getRuleTestCaseDesignList() {
-    return PsiTreeUtil.getChildrenOfTypeAsList(this, QaDesignRuleTestCaseDesign.class);
   }
 
   @Override
@@ -61,18 +42,8 @@ public class QaDesignRuleTestPointDesignImpl extends QaDesignNamedElementImpl im
   }
 
   @Override
-  public String getContent() {
-    return QaDesignPsiImplUtil.getContent(this);
-  }
-
-  @Override
   public PsiElement getNameIdentifier() {
     return QaDesignPsiImplUtil.getNameIdentifier(this);
-  }
-
-  @Override
-  public ItemPresentation getPresentation() {
-    return QaDesignPsiImplUtil.getPresentation(this);
   }
 
 }

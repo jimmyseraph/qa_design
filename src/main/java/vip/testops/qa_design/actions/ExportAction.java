@@ -7,12 +7,18 @@ import com.intellij.openapi.actionSystem.CommonDataKeys;
 import com.intellij.psi.PsiDirectory;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
+import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.tree.TokenSet;
 import com.intellij.util.PsiErrorElementUtil;
 import org.jetbrains.annotations.NotNull;
 import vip.testops.qa_design.QaDesignBundle;
 import vip.testops.qa_design.QaDesignNotifier;
+import vip.testops.qa_design.actions.entities.QaDesignEntity;
+import vip.testops.qa_design.actions.entities.QaDesignTestCase;
+import vip.testops.qa_design.actions.entities.QaDesignTestPoint;
 import vip.testops.qa_design.actions.ui.ExportDialog;
+import vip.testops.qa_design.lang.psi.QaDesignRuleLinkedMethod;
+import vip.testops.qa_design.lang.psi.QaDesignRuleTag;
 import vip.testops.qa_design.lang.psi.QaDesignTypes;
 import vip.testops.qa_design.lang.psi.impl.*;
 import vip.testops.qa_design.settings.ExportAndImportSettings;
@@ -80,7 +86,7 @@ public class ExportAction extends AnAction {
                         errorMessages.append(file.getVirtualFile().getPath()).append("\n");
                         continue;
                     }
-                    List<List<String>> data = parseQaDesignElementTree(file);
+                    QaDesignEntity data = parseQaDesignElementTree(file);
                     excelUtils.write(fieldMappings, data);
 
                 }
@@ -113,55 +119,107 @@ public class ExportAction extends AnAction {
         return psiFiles;
     }
 
-    private List<List<String>> parseQaDesignElementTree(PsiElement root) {
-        List<List<String>> result = new ArrayList<>();
+    private QaDesignEntity parseQaDesignElementTree(PsiElement root) {
+        QaDesignEntity result = new QaDesignEntity();
         String filename = root.getContainingFile().getName();
-        String requirementId = filename.substring(0,filename.length()-3);
-        String requirement = "";
+        String feature = "";
         ASTNode firstLineNode = root.getNode().findChildByType(QaDesignTypes.RULE_FIRST_LINE);
         if(firstLineNode != null) {
-            requirement = ((QaDesignRuleFirstLineImpl)firstLineNode.getPsi()).getContent();
+            feature = ((QaDesignRuleFirstLineImpl)firstLineNode.getPsi()).getContent();
+            result.setFeature(feature);
         }
         ASTNode[] testPointDesignNodes = root.getNode().getChildren(TokenSet.create(QaDesignTypes.RULE_TEST_POINT_DESIGN));
+        List<QaDesignTestPoint> testPoints = new ArrayList<>();
+        result.setTestPoints(testPoints);
         for(ASTNode testPointDesignNode : testPointDesignNodes) {
             String testPoint = ((QaDesignRuleTestPointDesignImpl)testPointDesignNode.getPsi()).getContent();
+            QaDesignTestPoint qaDesignTestPoint = new QaDesignTestPoint(testPoint);
+            testPoints.add(qaDesignTestPoint);
             ASTNode[] testCaseDesignNodes = testPointDesignNode.getChildren(TokenSet.create(QaDesignTypes.RULE_TEST_CASE_DESIGN));
+            List<QaDesignTestCase> testCases = new ArrayList<>();
+            qaDesignTestPoint.setTestCases(testCases);
             for(ASTNode testCaseDesignNode : testCaseDesignNodes) {
-                List<String> testCase = new ArrayList<>();
-                testCase.add(requirementId);
-                testCase.add(requirement);
-                testCase.add(testPoint);
-                testCase.add(((QaDesignRuleTestCaseDesignImpl)testCaseDesignNode.getPsi()).getContent());
+                QaDesignTestCase testCase = new QaDesignTestCase();
+                PsiElement linkElement = getPrevElement(testCaseDesignNode.getPsi(), testCaseDesignNode.getElementType(), QaDesignTypes.RULE_LINKED_METHOD);
+                PsiElement tagElement = getPrevElement(testCaseDesignNode.getPsi(), testCaseDesignNode.getElementType(), QaDesignTypes.RULE_TAG);
+                if (linkElement != null) {
+                    String linkValue = ((QaDesignRuleLinkedMethod)linkElement).getValue();
+                    testCase.setLink(linkValue);
+                }
+                if (tagElement != null) {
+                    String tagValues = ((QaDesignRuleTag)tagElement).getValue();
+                    for (String tagValue : tagValues.split(",")) {
+                        testCase.addTag(tagValue);
+                    }
+                }
+
+                testCase.setName(((QaDesignRuleTestCaseDesignImpl)testCaseDesignNode.getPsi()).getContent());
                 ASTNode testCaseDescNode = testCaseDesignNode.findChildByType(QaDesignTypes.RULE_TEST_CASE_DESC);
                 if(testCaseDescNode != null) {
-                    testCase.add(((QaDesignRuleTestCaseDescImpl)testCaseDescNode.getPsi()).getContent());
+                    String name = ((QaDesignRuleTestCaseDescImpl)testCaseDescNode.getPsi()).getName();
+                    String testCaseDesc = (testCaseDescNode.getPsi()).getOriginalElement().getText();
+                    assert name != null;
+                    testCaseDesc = testCaseDesc.substring(testCaseDesc.indexOf(name)+name.length());
+                    testCaseDesc = testCaseDesc.substring(testCaseDesc.indexOf(":")+1);
+                    testCaseDesc = testCaseDesc.replace("\\", "");
+                    testCase.setDesc(testCaseDesc);
                 } else {
-                    testCase.add("");
+                    testCase.setDesc("");
                 }
 
                 ASTNode testCaseDataNode = testCaseDesignNode.findChildByType(QaDesignTypes.RULE_TEST_CASE_DATA);
                 if(testCaseDataNode != null) {
-                    testCase.add(((QaDesignRuleTestCaseDataImpl)testCaseDataNode.getPsi()).getContent());
+                    String name = ((QaDesignRuleTestCaseDataImpl)testCaseDataNode.getPsi()).getName();
+                    String testCaseData = (testCaseDataNode.getPsi()).getOriginalElement().getText();
+                    assert name != null;
+                    testCaseData = testCaseData.substring(testCaseData.indexOf(name)+name.length());
+                    testCaseData = testCaseData.substring(testCaseData.indexOf(":")+1);
+                    testCaseData = testCaseData.replace("\\", "");
+                    testCase.setData(testCaseData);
                 } else {
-                    testCase.add("");
+                    testCase.setData("");
                 }
 
                 ASTNode testCaseStepNode = testCaseDesignNode.findChildByType(QaDesignTypes.RULE_TEST_CASE_STEP);
                 if(testCaseStepNode != null) {
-                    testCase.add(((QaDesignRuleTestCaseStepImpl)testCaseStepNode.getPsi()).getContent());
+                    String name = ((QaDesignRuleTestCaseStepImpl)testCaseStepNode.getPsi()).getName();
+                    String testCaseStep = (testCaseStepNode.getPsi()).getOriginalElement().getText();
+                    assert name != null;
+                    testCaseStep = testCaseStep.substring(testCaseStep.indexOf(name)+name.length());
+                    testCaseStep = testCaseStep.substring(testCaseStep.indexOf(":")+1);
+                    testCaseStep = testCaseStep.replace("\\", "");
+                    testCase.setStep(testCaseStep);
                 } else {
-                    testCase.add("");
+                    testCase.setStep("");
                 }
 
                 ASTNode testCaseExpectNode = testCaseDesignNode.findChildByType(QaDesignTypes.RULE_TEST_CASE_EXPECT);
                 if(testCaseExpectNode != null) {
-                    testCase.add(((QaDesignRuleTestCaseExpectImpl)testCaseExpectNode.getPsi()).getContent());
+                    String name = ((QaDesignRuleTestCaseExpectImpl)testCaseExpectNode.getPsi()).getName();
+                    String testCaseExpect = (testCaseExpectNode.getPsi()).getOriginalElement().getText();
+                    assert name != null;
+                    testCaseExpect = testCaseExpect.substring(testCaseExpect.indexOf(name)+name.length());
+                    testCaseExpect = testCaseExpect.substring(testCaseExpect.indexOf(":")+1);
+                    testCaseExpect = testCaseExpect.replace("\\", "");
+                    testCase.setExpect(testCaseExpect);
                 } else {
-                    testCase.add("");
+                    testCase.setExpect("");
                 }
-                result.add(testCase);
+                testCases.add(testCase);
             }
         }
         return result;
     }
+
+    private PsiElement getPrevElement(PsiElement element, IElementType stopType, IElementType findType) {
+        PsiElement prev = element.getPrevSibling();
+        while (prev != null && prev.isValid() && prev.getNode().getElementType() != stopType) {
+            if (prev.getNode().getElementType() == findType) {
+                return prev;
+            }
+            prev = prev.getPrevSibling();
+        }
+        return null;
+    }
+
 }

@@ -48,6 +48,7 @@
          Read more: https://plugins.jetbrains.com/docs/intellij/plugin-compatibility.html -->
     <depends>com.intellij.modules.platform</depends>
     <depends>org.intellij.plugins.markdown</depends>
+    <depends>com.intellij.modules.java</depends>
     <depends>TestNG-J</depends>
 
     <resource-bundle>messages.qadesign</resource-bundle>

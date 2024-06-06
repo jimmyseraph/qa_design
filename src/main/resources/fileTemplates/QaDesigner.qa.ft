@@ -1,0 +1,8 @@
+Feature: feature A
+
+TestPoint: point A
+    TestCase: case name
+        TestCaseDesc: description
+        TestCaseData: x=1
+        TestCaseStep: step...
+        TestCaseExpect: expect
