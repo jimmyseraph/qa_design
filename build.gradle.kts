@@ -1,10 +1,10 @@
 plugins {
     id("java")
-    id("org.jetbrains.intellij") version "1.14.2"
+    id("org.jetbrains.intellij") version "1.17.3"
 }
 
 group = "vip.testops"
-version = "1.0.0"
+version = "1.1.0"
 
 repositories {
     mavenCentral()
@@ -12,15 +12,15 @@ repositories {
 }
 
 dependencies {
-    implementation("com.theokanning.openai-gpt3-java:service:0.12.0")
-    implementation("org.apache.poi:poi-ooxml:5.2.3")
+    implementation("com.theokanning.openai-gpt3-java:service:0.18.2")
+    implementation("org.apache.poi:poi-ooxml:5.2.5")
 
 }
 
 // Configure Gradle IntelliJ Plugin
 // Read more: https://plugins.jetbrains.com/docs/intellij/tools-gradle-intellij-plugin.html
 intellij {
-    version.set("2022.3")
+    version.set("2024.1")
     type.set("IC") // Target IDE Platform
 
     plugins.set(listOf(
@@ -47,7 +47,7 @@ tasks {
 
     patchPluginXml {
         sinceBuild.set("223")
-        untilBuild.set("231.*")
+        untilBuild.set("241.*")
     }
 
     signPlugin {

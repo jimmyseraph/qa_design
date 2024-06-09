@@ -64,16 +64,13 @@
 
     <extensions defaultExtensionNs="vip.testops.qa_design.settings">
         <!-- Add your own extensions here -->
-        <fieldMapping fieldName="Requirement ID" qaDesignKeyword="RequirementID" />
-        <fieldMapping fieldName="Requirement" qaDesignKeyword="Requirement" />
-        <fieldMapping fieldName="Test Point" qaDesignKeyword="TestPoint" />
-        <fieldMapping fieldName="Test Case" qaDesignKeyword="TestCase" />
-        <fieldMapping fieldName="Test Case Desc" qaDesignKeyword="TestCaseDesc" />
-        <fieldMapping fieldName="Test Case Data" qaDesignKeyword="TestCaseData" />
-        <fieldMapping fieldName="Test Case Step" qaDesignKeyword="TestCaseStep" />
-        <fieldMapping fieldName="Test Case Expected" qaDesignKeyword="TestCaseExpect" />
-        <fieldMapping fieldName="Test Case designer" />
-        <fieldMapping fieldName="Test Case executor" />
+        <fieldMapping column="A" fieldName="Feature" qaDesignKeyword="Feature" />
+        <fieldMapping column="B" fieldName="Test Point" qaDesignKeyword="TestPoint" />
+        <fieldMapping column="C" fieldName="Test Case" qaDesignKeyword="TestCase" />
+        <fieldMapping column="D" fieldName="Test Case Desc" qaDesignKeyword="TestCaseDesc" />
+        <fieldMapping column="E" fieldName="Test Case Data" qaDesignKeyword="TestCaseData" />
+        <fieldMapping column="F" fieldName="Test Case Step" qaDesignKeyword="TestCaseStep" />
+        <fieldMapping column="G" fieldName="Test Case Expected" qaDesignKeyword="TestCaseExpect" />
     </extensions>
 
 

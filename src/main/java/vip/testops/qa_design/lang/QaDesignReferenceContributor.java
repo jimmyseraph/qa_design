@@ -17,9 +17,9 @@ public class QaDesignReferenceContributor extends PsiReferenceContributor {
     @Override
     public void registerReferenceProviders(@NotNull PsiReferenceRegistrar registrar) {
         final JavaClassReferenceProvider methodSelectorProvider = new JavaClassReferenceProvider();
-//        List<String> classes = new ArrayList<>();
-//        classes.add(new String("org.testng.IMethodSelector"));
-        methodSelectorProvider.setOption(JavaClassReferenceProvider.EXTEND_CLASS_NAMES, new String[]{"org.testng.IMethodSelector"});
+        List<String> classes = new ArrayList<>();
+        classes.add(new String("org.testng.IMethodSelector"));
+        methodSelectorProvider.setOption(JavaClassReferenceProvider.SUPER_CLASSES, classes);
         methodSelectorProvider.setOption(JavaClassReferenceProvider.ALLOW_DOLLAR_NAMES, Boolean.TRUE);
         JavaClassReferenceProvider provider = new JavaClassReferenceProvider();
         registrar.registerReferenceProvider(
